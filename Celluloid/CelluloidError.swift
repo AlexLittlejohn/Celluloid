@@ -6,7 +6,7 @@
 //  Copyright © 2016 Alex Littlejohn. All rights reserved.
 //
 
-enum CelluloidError: ErrorType {
+public enum CelluloidError: ErrorType {
     case DeviceCreationFailed
     case DeviceLockFailed
     case DeviceNotSet
@@ -15,5 +15,9 @@ enum CelluloidError: ErrorType {
     case FlashNotSupported
     case InputCreationFailed
     case SessionNotSet
-    
+    case SessionCreationError
+    case CameraAuthorizationFailed
+    case ImageOutputCreationFailed
+    case VideoOutputCreationFailed
+    case VideoOutputDelegateDeallocated
 }
