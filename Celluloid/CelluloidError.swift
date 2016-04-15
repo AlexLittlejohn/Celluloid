@@ -6,6 +6,9 @@
 //  Copyright © 2016 Alex Littlejohn. All rights reserved.
 //
 
+/**
+ CelluloidError type. All possible camera errors.
+ */
 public enum CelluloidError: ErrorType {
     case DeviceCreationFailed
     case DeviceLockFailed
@@ -14,9 +17,7 @@ public enum CelluloidError: ErrorType {
     case FocusNotSupported
     case FlashNotSupported
     case InputCreationFailed
-    case SessionNotSet
-    case SessionCreationError
-    case CameraAuthorizationFailed
+    case InputNotSet
     case ImageOutputCreationFailed
     case VideoOutputCreationFailed
     case VideoOutputDelegateDeallocated

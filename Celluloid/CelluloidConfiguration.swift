@@ -9,14 +9,18 @@
 import UIKit
 import AVFoundation
 
+/**
+ The configuration object, leave the default session as is or create your own configuration when initializing the camera
+ */
 public class CelluloidConfiguration {
-    public static let shared = CelluloidConfiguration()
+    /// First camera position on initialization
+    var startingCameraPosition: AVCaptureDevicePosition = .Back
     
+    /// Image output options. Default type = JPEG
+    var imageOutputSettings: [String: String] = [AVVideoCodecKey: AVVideoCodecJPEG]
+    
+    /// Video output options.
     var videoOutputSettings: [String: Int] = [
         kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)
     ]
-    
-    var imageOutputSettings: [String: String] = [AVVideoCodecKey: AVVideoCodecJPEG]
-    
-    var startingCameraPosition: AVCaptureDevicePosition = .Back
 }

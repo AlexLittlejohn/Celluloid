@@ -7,19 +7,33 @@
 //
 
 import UIKit
+import Celluloid
 
 class ViewController: UIViewController {
 
+    let cameraView = CelluloidView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        view.addSubview(cameraView)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        do {
+            try cameraView.startCamera() { success in
+                
+            }
+            print("camera started")
+        } catch {
+            print("camera start failed")
+        }
     }
-
-
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        cameraView.frame = view.bounds
+    }
 }
 

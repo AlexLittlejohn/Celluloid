@@ -9,13 +9,20 @@
 import UIKit
 import AVFoundation
 
-public typealias AuthorizeCameraComplete = (success: Bool) -> Void
+/**
+ Camera authorization closure signature.
+ */
+public typealias AuthorizeCameraComplete = (Bool) -> Void
 
+/**
+ Camera authorization function.
+ */
 internal func authorizeCamera(completion: AuthorizeCameraComplete) {
+    
     guard AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) != .Authorized else {
-        completion(success: true)
+        completion(true)
         return
     }
     
-    AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo) { completion(success: $0) }
+    AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo) { completion($0) }
 }
