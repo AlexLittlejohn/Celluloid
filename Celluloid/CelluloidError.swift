@@ -10,15 +10,14 @@
  CelluloidError type. All possible camera errors.
  */
 public enum CelluloidError: ErrorType {
-    case DeviceCreationFailed
     case DeviceLockFailed
     case DeviceNotSet
     case ExposureNotSupported
     case FocusNotSupported
     case FlashNotSupported
-    case InputCreationFailed
     case InputNotSet
+    case DeviceCreationFailed
+    case InputCreationFailed
     case ImageOutputCreationFailed
-    case VideoOutputCreationFailed
-    case VideoOutputDelegateDeallocated
+    case MovieOutputCreationFailed
 }

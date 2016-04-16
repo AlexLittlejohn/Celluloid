@@ -53,7 +53,7 @@ public class CelluloidSessionController {
      
      Will be nil if the session controller has not yet been started with `start(_:)`
      */
-    var videoOutput: AVCaptureVideoDataOutput!
+    var movieOutput: AVCaptureMovieFileOutput!
     /**
      The current image output
      
@@ -71,18 +71,14 @@ public class CelluloidSessionController {
      */
     let configuration: CelluloidConfiguration
     
-    weak var delegate: AVCaptureVideoDataOutputSampleBufferDelegate?
-    
     /**
      Create a new session controller with a video ouput delegate and a configuration object.
      
      - paramater **delegate**: The camera video ouput delegate
      - paramater **configuration**: A configuration object
      */
-    public init(delegate: AVCaptureVideoDataOutputSampleBufferDelegate,
-                configuration: CelluloidConfiguration = CelluloidConfiguration()) {
+    public init(configuration: CelluloidConfiguration = CelluloidConfiguration()) {
         self.configuration = configuration
-        self.delegate = delegate
     }
     
     /**
@@ -286,22 +282,17 @@ private extension CelluloidSessionController {
      
      If an error occurs the method will throw one of the following `CelluloidError` types.
      
-     - VideoOutputDelegateDeallocated
      - DeviceCreationFailed
      - InputCreationFailed
      - ImageOutputCreationFailed
-     - VideoOutputCreationFailed
+     - MovieOutputCreationFailed
      */
     private func setup() throws {
-        guard let delegate = delegate else {
-            throw CelluloidError.VideoOutputDelegateDeallocated
-        }
-        
         session.beginConfiguration()
-        session.sessionPreset = AVCaptureSessionPresetPhoto
+        session.sessionPreset = AVCaptureSessionPresetHigh
         device = try deviceWith(type: .Video, position: configuration.startingCameraPosition)
         input = try videoInputFor(session: session, device: device)
-        videoOutput = try videoOutputFor(session: session, delegate: delegate)
+        movieOutput = try movieOutputFor(session: session)
         imageOutput = try imageOutputFor(session: session)
         session.commitConfiguration()
     }
@@ -349,25 +340,21 @@ private extension CelluloidSessionController {
     }
     
     /**
-     Create a video output for the camera
+     Create a movie output for the camera
      
      Throws:
-     - VideoOutputCreationFailed
+     - MovieOutputCreationFailed
      
      ---
      
      - paramater **session**: A capture session to create the output for.
-     - paramater **delegate**: A delegate object for the video output
-     - returns: A new `AVCaptureVideoDataOutput` for the session and delegate
+     - returns: A new `AVCaptureMovieFileOutput` for the session and delegate
      */
-    private func videoOutputFor(session session: AVCaptureSession, delegate: AVCaptureVideoDataOutputSampleBufferDelegate) throws -> AVCaptureVideoDataOutput {
-        let output = AVCaptureVideoDataOutput()
-        output.videoSettings = configuration.videoOutputSettings
-        output.alwaysDiscardsLateVideoFrames = true
-        output.setSampleBufferDelegate(delegate, queue: sessionQueue)
+    private func movieOutputFor(session session: AVCaptureSession) throws -> AVCaptureMovieFileOutput {
+        let output = AVCaptureMovieFileOutput()
         
         guard session.canAddOutput(output) else {
-            throw CelluloidError.VideoOutputCreationFailed
+            throw CelluloidError.MovieOutputCreationFailed
         }
         
         session.addOutput(output)

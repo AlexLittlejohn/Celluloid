@@ -17,7 +17,7 @@ public class CelluloidView: UIView {
     /**
      The session controller is the brains behind the camera and manages all the aspects thereof.
      */
-    lazy var sessionController: CelluloidSessionController = CelluloidSessionController(delegate: self, configuration: self.configuration)
+    lazy var sessionController: CelluloidSessionController = CelluloidSessionController(configuration: self.configuration)
     
     /**
      The preview layer used by the capture device.
@@ -43,11 +43,10 @@ public class CelluloidView: UIView {
     /**
      This is required to start the camera session and preview. If permission is not given by the user to access the camera the closure paramater will be false. If an error occurs the method will throw one of the following `CelluloidError` types.
      
-     - VideoOutputDelegateDeallocated
      - DeviceCreationFailed
      - InputCreationFailed
      - ImageOutputCreationFailed
-     - VideoOutputCreationFailed
+     - MovieOutputCreationFailed
      
      ---
      
@@ -205,12 +204,6 @@ public extension CelluloidView {
      */
     public func setCamera(zoom zoom: CGFloat) throws {
         try setCamera(zoom: zoom)
-    }
-}
-
-extension CelluloidView: AVCaptureVideoDataOutputSampleBufferDelegate {
-    public func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        
     }
 }
 
