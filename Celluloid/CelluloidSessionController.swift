@@ -27,6 +27,8 @@ enum CelluloidMediaType: CustomStringConvertible {
  Closure signature for camera startup
  */
 public typealias CelluloidSessionStartupComplete = AuthorizeCameraComplete
+public typealias StillImageCaptureCompletion = (UIImage?) -> Void
+public typealias MovieCaptureCompletion = (NSURL?) -> Void
 
 /**
  The camera session controller. Controls the finer aspects of a camera device.
@@ -53,13 +55,13 @@ public class CelluloidSessionController {
      
      Will be nil if the session controller has not yet been started with `start(_:)`
      */
-    var movieOutput: AVCaptureMovieFileOutput!
+    var movieOutput: MovieSessionController!
     /**
      The current image output
      
      Will be nil if the session controller has not yet been started with `start(_:)`
      */
-    var imageOutput: AVCaptureStillImageOutput!
+    var photoOutput: PhotoSessionController!
     /**
      The current camera device
      
@@ -92,7 +94,7 @@ public class CelluloidSessionController {
      
      ---
      
-     - paramater **closure**: A closure that will be called after the session starts up and/or authorization fails
+     - paramater **closure**: A closure that will be called after the session starts up or authorization fails
      */
     public func start(closure: CelluloidSessionStartupComplete) throws {
         try setup()
@@ -116,6 +118,37 @@ public class CelluloidSessionController {
         async(sessionQueue) {
             self.session.stopRunning()
         }
+    }
+    
+    /**
+     Capture a photo from the current camera session and pass it to the completion block which will be called on the main thread
+     */
+    func capturePhoto(closure: StillImageCaptureCompletion) {
+        guard let photoOutput = photoOutput else {
+            closure(nil)
+            return
+        }
+        
+        photoOutput.capturePhoto(closure)
+    }
+    
+    /**
+     Capture a movie from the current camera session and pass its file path to the completion block which will be called on the main thread
+     */
+    func startRecording(completion: MovieCaptureCompletion?) {
+        guard let movieOutput = movieOutput else {
+            return
+        }
+        
+        movieOutput.startRecording(completion)
+    }
+    
+    func stopRecording() {
+        guard let movieOutput = movieOutput else {
+            return
+        }
+        
+        movieOutput.stopRecording()
     }
 }
 
@@ -293,7 +326,7 @@ private extension CelluloidSessionController {
         device = try deviceWith(type: .Video, position: configuration.startingCameraPosition)
         input = try videoInputFor(session: session, device: device)
         movieOutput = try movieOutputFor(session: session)
-        imageOutput = try imageOutputFor(session: session)
+        photoOutput = try photoOutputFor(session: session, device: device, configuration: configuration)
         session.commitConfiguration()
     }
     
@@ -350,20 +383,12 @@ private extension CelluloidSessionController {
      - paramater **session**: A capture session to create the output for.
      - returns: A new `AVCaptureMovieFileOutput` for the session and delegate
      */
-    private func movieOutputFor(session session: AVCaptureSession) throws -> AVCaptureMovieFileOutput {
-        let output = AVCaptureMovieFileOutput()
-        
-        guard session.canAddOutput(output) else {
-            throw CelluloidError.MovieOutputCreationFailed
-        }
-        
-        session.addOutput(output)
-        
-        return output
+    private func movieOutputFor(session session: AVCaptureSession) throws -> MovieSessionController {
+        return try MovieSessionController(session: session)
     }
     
     /**
-     Create an image output for the camera
+     Create a photo output for the camera
      
      Throws:
      - ImageOutputCreationFailed
@@ -371,17 +396,12 @@ private extension CelluloidSessionController {
      ---
      
      - paramater **session**: A capture session to create the output for.
-     - returns: A new `AVCaptureStillImageOutput` for the session and device
+     - paramater **device**: A capture device for capturing photos.
+     - paramater **configuration**: The configuration object for the image output.
+     - returns: A new `PhotoSessionController` for the session and device
      */
-    private func imageOutputFor(session session: AVCaptureSession) throws -> AVCaptureStillImageOutput {
-        let output = AVCaptureStillImageOutput()
-        output.outputSettings = configuration.imageOutputSettings
-        
-        guard session.canAddOutput(output) else {
-            throw CelluloidError.ImageOutputCreationFailed
-        }
-        
-        return output
+    private func photoOutputFor(session session: AVCaptureSession, device: AVCaptureDevice, configuration: CelluloidConfiguration) throws -> PhotoSessionController {
+        return try PhotoSessionController(session: session, device: device, configuration: configuration)
     }
 }
 

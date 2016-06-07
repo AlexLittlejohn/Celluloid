@@ -32,12 +32,50 @@ public class CelluloidView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        preview = createPreview(session: sessionController.session)
+        commonInit()
     }
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        commonInit()
+    }
+    
+    /// Soooo many initializers...
+    func commonInit() {
         preview = createPreview(session: sessionController.session)
+        
+        NSNotificationCenter.defaultCenter().addObserver(
+            self,
+            selector: #selector(rotateCameraConnection),
+            name: UIDeviceOrientationDidChangeNotification,
+            object: nil)
+    }
+    
+    /// Remember to remove observers on deallocation
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    /// We adjust the camera rotation even if device rotation is disabled
+    func rotateCameraConnection() {
+        
+        let statusBarOrientation = UIApplication.sharedApplication().statusBarOrientation
+        let connectionOrientation: AVCaptureVideoOrientation
+        
+        switch statusBarOrientation {
+        case .Portrait:
+            connectionOrientation = .Portrait
+        case .PortraitUpsideDown:
+            connectionOrientation = .PortraitUpsideDown
+        case .LandscapeLeft:
+            connectionOrientation = .LandscapeLeft
+        case .LandscapeRight:
+            connectionOrientation = .LandscapeRight
+        default:
+            return
+        }
+        
+        preview?.connection.videoOrientation = connectionOrientation
     }
     
     /**
@@ -66,6 +104,11 @@ public class CelluloidView: UIView {
     public override func layoutSubviews() {
         super.layoutSubviews()
         preview?.frame = bounds
+    }
+    
+    
+    public func takePhoto() -> UIImage {
+        return UIImage()
     }
 }
 

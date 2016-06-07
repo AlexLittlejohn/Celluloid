@@ -10,6 +10,8 @@
 		C40E42991CBFB0A000F899C1 /* Celluloid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C48F8B761CB17665008B663D /* Celluloid.framework */; };
 		C40E429B1CBFB0AB00F899C1 /* Celluloid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C48F8B761CB17665008B663D /* Celluloid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C40E42A61CBFBF7600F899C1 /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40E42A51CBFBF7600F899C1 /* Async.swift */; };
+		C46F05101CC260DC00B51FFF /* PhotoSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C46F050F1CC260DC00B51FFF /* PhotoSessionController.swift */; };
+		C46F05121CC2639F00B51FFF /* MovieSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C46F05111CC2639F00B51FFF /* MovieSessionController.swift */; };
 		C48F8B791CB17665008B663D /* Celluloid.h in Headers */ = {isa = PBXBuildFile; fileRef = C48F8B781CB17665008B663D /* Celluloid.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C48F8B851CB1767A008B663D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48F8B841CB1767A008B663D /* AppDelegate.swift */; };
 		C48F8B871CB1767A008B663D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48F8B861CB1767A008B663D /* ViewController.swift */; };
@@ -50,6 +52,8 @@
 /* Begin PBXFileReference section */
 		C40E429F1CBFB18B00F899C1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C40E42A51CBFBF7600F899C1 /* Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Async.swift; sourceTree = "<group>"; };
+		C46F050F1CC260DC00B51FFF /* PhotoSessionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoSessionController.swift; sourceTree = "<group>"; };
+		C46F05111CC2639F00B51FFF /* MovieSessionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieSessionController.swift; sourceTree = "<group>"; };
 		C48F8B761CB17665008B663D /* Celluloid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Celluloid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C48F8B781CB17665008B663D /* Celluloid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Celluloid.h; sourceTree = "<group>"; };
 		C48F8B821CB1767A008B663D /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -110,6 +114,8 @@
 				C48F8B781CB17665008B663D /* Celluloid.h */,
 				C48F8B941CB176FA008B663D /* CelluloidView.swift */,
 				C4DD635D1CB505E400429307 /* CelluloidSessionController.swift */,
+				C46F050F1CC260DC00B51FFF /* PhotoSessionController.swift */,
+				C46F05111CC2639F00B51FFF /* MovieSessionController.swift */,
 				C48F8B961CB17ADA008B663D /* CelluloidError.swift */,
 				C4DD635F1CB5287600429307 /* Authorizer.swift */,
 				C4DD63611CB5316300429307 /* CelluloidConfiguration.swift */,
@@ -247,9 +253,11 @@
 				C4DD63601CB5287600429307 /* Authorizer.swift in Sources */,
 				C4DD635E1CB505E400429307 /* CelluloidSessionController.swift in Sources */,
 				C48F8B971CB17ADA008B663D /* CelluloidError.swift in Sources */,
+				C46F05101CC260DC00B51FFF /* PhotoSessionController.swift in Sources */,
 				C48F8B951CB176FA008B663D /* CelluloidView.swift in Sources */,
 				C40E42A61CBFBF7600F899C1 /* Async.swift in Sources */,
 				C4DD63621CB5316300429307 /* CelluloidConfiguration.swift in Sources */,
+				C46F05121CC2639F00B51FFF /* MovieSessionController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
