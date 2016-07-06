@@ -7,6 +7,6 @@
 //
 
 /// dispatch_async wrapper utility
-func async(queue: dispatch_queue_t = dispatch_get_main_queue(), closure: () -> Void) {
-    dispatch_async(queue, closure)
+func async(_ queue: DispatchQueue = DispatchQueue.main, closure: () -> Void) {
+    queue.async(execute: closure)
 }

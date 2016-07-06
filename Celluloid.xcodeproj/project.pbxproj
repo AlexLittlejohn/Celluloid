@@ -194,6 +194,7 @@
 				TargetAttributes = {
 					C48F8B751CB17665008B663D = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0800;
 					};
 					C48F8B811CB1767A008B663D = {
 						CreatedOnToolsVersion = 7.3;
@@ -395,6 +396,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -417,6 +419,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zero.Celluloid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};

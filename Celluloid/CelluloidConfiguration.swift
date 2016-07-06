@@ -14,7 +14,7 @@ import AVFoundation
  */
 public class CelluloidConfiguration {
     /// First camera position on initialization
-    var startingCameraPosition: AVCaptureDevicePosition = .Back
+    var startingCameraPosition: AVCaptureDevicePosition = .back
     
     /// Image output options. Default type = JPEG
     var imageOutputSettings: [String: String] = [AVVideoCodecKey: AVVideoCodecJPEG]

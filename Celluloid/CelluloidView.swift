@@ -52,7 +52,7 @@ public class CelluloidView: UIView {
      
      - paramater **closure**: A closure that will be called after the camera starts up and/or authorization fails
      */
-    public func startCamera(closure: CelluloidSessionStartupComplete) throws {
+    public func startCamera(_ closure: CelluloidSessionStartupComplete) throws {
         try sessionController.start(closure)
     }
     
@@ -118,21 +118,21 @@ public extension CelluloidView {
      
      */
     public func cycleFlash() throws {
-        let mode = nextFlashMode(flashMode ?? .Auto)
+        let mode = nextFlashMode(flashMode ?? .auto)
         try sessionController.setFlash(mode: mode)
     }
     
     /**
      Chooses the next flash mode based on the current flash mode.
      */
-    internal func nextFlashMode(mode: AVCaptureFlashMode) -> AVCaptureFlashMode {
+    internal func nextFlashMode(_ mode: AVCaptureFlashMode) -> AVCaptureFlashMode {
         switch mode {
-        case .On:
-            return .Off
-        case .Off:
-            return .Auto
-        case .Auto:
-            return .On
+        case .on:
+            return .off
+        case .off:
+            return .auto
+        case .auto:
+            return .on
         }
     }
 
@@ -149,7 +149,7 @@ public extension CelluloidView {
      - paramater **toPoint**: The focus point of interest in screen coordinates.
      
      */
-    public func setFocus(toPoint toPoint: CGPoint) throws {
+    public func setFocus(toPoint: CGPoint) throws {
         // - focus points are in 0...1, not screen pixels
         let focusPoint = CGPoint(x: toPoint.x / frame.width, y: toPoint.y / frame.height)
         try sessionController.setFocus(toPoint: focusPoint)
@@ -168,7 +168,7 @@ public extension CelluloidView {
      - paramater **toPoint**: The exposure point of interest in screen coordinates.
      
      */
-    public func setExposue(toPoint toPoint: CGPoint) throws {
+    public func setExposue(toPoint: CGPoint) throws {
         // - exposure points are in 0...1, not screen pixels
         let exposurePoint = CGPoint(x: toPoint.x / frame.width, y: toPoint.y / frame.height)
         try sessionController.setExposue(toPoint: exposurePoint)
@@ -185,7 +185,7 @@ public extension CelluloidView {
      - CelluloidError.InputCreationFailed
      */
     public func swapCameraPosition() throws {
-        let newPosition: AVCaptureDevicePosition = position == .Front ? .Back : .Front
+        let newPosition: AVCaptureDevicePosition = position == .front ? .back : .front
         try sessionController.setCamera(position: newPosition)
     }
 
@@ -202,7 +202,7 @@ public extension CelluloidView {
      
      - paramater **zoom**: A float value denoting the desired zoom scale
      */
-    public func setCamera(zoom zoom: CGFloat) throws {
+    public func setCamera(zoom: CGFloat) throws {
         try setCamera(zoom: zoom)
     }
 }
@@ -213,14 +213,14 @@ private extension CelluloidView {
      
      - paramater **session**: The `AVCaptureSession` to create the preview with
      */
-    private func createPreview(session session: AVCaptureSession) -> AVCaptureVideoPreviewLayer {
+    private func createPreview(session: AVCaptureSession) -> AVCaptureVideoPreviewLayer {
         let preview = AVCaptureVideoPreviewLayer(session: session)
-        preview.videoGravity = AVLayerVideoGravityResizeAspectFill
-        preview.frame = bounds
+        preview?.videoGravity = AVLayerVideoGravityResizeAspectFill
+        preview?.frame = bounds
         
-        layer.addSublayer(preview)
+        layer.addSublayer(preview!)
         
-        return preview
+        return preview!
     }
 }
 
