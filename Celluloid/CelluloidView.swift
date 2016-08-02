@@ -13,23 +13,16 @@ import AVFoundation
  CelluloidView is the main component of Celluloid. Use it to add camera functionality to your app.
  */
 public class CelluloidView: UIView {
-    
     /**
      The session controller is the brains behind the camera and manages all the aspects thereof.
      */
-    lazy var sessionController: CelluloidSessionController = CelluloidSessionController(configuration: self.configuration)
+    lazy var sessionController: CelluloidSessionController = CelluloidSessionController()
     
     /**
      The preview layer used by the capture device.
      */
-    var preview: AVCaptureVideoPreviewLayer!
+    var preview: AVCaptureVideoPreviewLayer?
     
-    /**
-     The configuration object used by the session.
-     By default it will be `CelluloidConfiguration.defaultConfiguration`
-     */
-    var configuration = CelluloidConfiguration()
-
     public override init(frame: CGRect) {
         super.init(frame: frame)
         preview = createPreview(session: sessionController.session)
@@ -52,27 +45,32 @@ public class CelluloidView: UIView {
      
      - paramater **closure**: A closure that will be called after the camera starts up and/or authorization fails
      */
-    public func startCamera(_ closure: CelluloidSessionStartupComplete) throws {
-        try sessionController.start(closure)
+    public func startCamera(closure: CelluloidSessionStartComplete) throws {
+        try sessionController.start(closure: closure)
     }
     
     /**
      Stops the preview and the session from running. Call this when you remove the camera from the view or in `viewWillDissappear`
      */
-    public func stopCamera() {
-        sessionController.stop()
+    public func stopCamera(closure: CelluloidSessionStopComplete) {
+        sessionController.stop(closure: closure)
+    }
+
+
+    public func setCaptureMode(type: CelluloidCaptureType) throws {
+        
     }
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        preview?.frame = bounds
+        preview?.frame = layer.bounds
     }
 }
 
 public extension CelluloidView {
     /**
      The current flash mode.
-     
+
      Will be nil if the camera has not yet been started with `startCamera(_:)`
      */
     var flashMode: AVCaptureFlashMode? {
@@ -109,23 +107,23 @@ public extension CelluloidView {
 
 public extension CelluloidView {
     /**
-     Cycles between the 3 posible flash modes specified in `AVCaptureFlashMode`.
-     
-     Throws:
-     - CelluloidError.FlashNotSupported
-     - CelluloidError.DeviceNotSet
-     - CelluloidError.DeviceLockFailed
-     
+     Cycles between the possible flash modes specified in `AVCaptureFlashMode`.
      */
-    public func cycleFlash() throws {
-        let mode = nextFlashMode(flashMode ?? .auto)
-        try sessionController.setFlash(mode: mode)
+    public func cycleFlash() throws -> AVCaptureFlashMode {
+        let mode = nextFlash(mode: flashMode ?? .auto)
+        sessionController.setFlash(mode: mode)
+        return mode
     }
     
     /**
      Chooses the next flash mode based on the current flash mode.
      */
-    internal func nextFlashMode(_ mode: AVCaptureFlashMode) -> AVCaptureFlashMode {
+    internal func nextFlash(mode: AVCaptureFlashMode) -> AVCaptureFlashMode {
+
+        guard sessionController.device.isFlashAvailable else {
+            return .off
+        }
+
         switch mode {
         case .on:
             return .off
@@ -213,14 +211,16 @@ private extension CelluloidView {
      
      - paramater **session**: The `AVCaptureSession` to create the preview with
      */
-    private func createPreview(session: AVCaptureSession) -> AVCaptureVideoPreviewLayer {
-        let preview = AVCaptureVideoPreviewLayer(session: session)
-        preview?.videoGravity = AVLayerVideoGravityResizeAspectFill
-        preview?.frame = bounds
+    private func createPreview(session: AVCaptureSession) -> AVCaptureVideoPreviewLayer? {
+        guard let preview = AVCaptureVideoPreviewLayer(session: session) else {
+            return nil
+        }
+        preview.videoGravity = AVLayerVideoGravityResizeAspectFill
+        preview.frame = layer.bounds
         
-        layer.addSublayer(preview!)
+        layer.addSublayer(preview)
         
-        return preview!
+        return preview
     }
 }
 
