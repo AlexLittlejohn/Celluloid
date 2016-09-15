@@ -7,6 +7,6 @@
 //
 
 /// dispatch_async wrapper utility
-func async(_ queue: DispatchQueue = DispatchQueue.main, closure: () -> Void) {
+func async(_ queue: DispatchQueue = DispatchQueue.main, closure: @escaping () -> Void) {
     queue.async(execute: closure)
 }

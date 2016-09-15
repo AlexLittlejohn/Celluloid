@@ -7,7 +7,12 @@
 //
 
 import UIKit
+import Photos
 
-class CelluloidDelegate: NSObject {
-
+protocol CelluloidDelegate {
+    func cameraDidCapture(photo: Photo)
+    func cameraDidCapture(livePhoto: LivePhoto)
+    func cameraCaptureDidFail(error: Error)
+    func cameraDidStart()
+    func cameraDidStop(error: Error?)
 }

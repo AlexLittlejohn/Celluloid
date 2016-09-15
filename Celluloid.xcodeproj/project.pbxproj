@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C1CF9261D71EECF00FE4F4F /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1CF9251D71EECF00FE4F4F /* Photo.swift */; };
 		7C2F7BA01D48E73600E17D37 /* CelluloidCaptureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2F7B9F1D48E73600E17D37 /* CelluloidCaptureType.swift */; };
 		7C83E4821D39785400F52184 /* CelluloidDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C83E4811D39785400F52184 /* CelluloidDelegate.swift */; };
 		C40E42991CBFB0A000F899C1 /* Celluloid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C48F8B761CB17665008B663D /* Celluloid.framework */; };
@@ -49,6 +50,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7C1CF9251D71EECF00FE4F4F /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		7C2F7B9F1D48E73600E17D37 /* CelluloidCaptureType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelluloidCaptureType.swift; sourceTree = "<group>"; };
 		7C83E4811D39785400F52184 /* CelluloidDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelluloidDelegate.swift; sourceTree = "<group>"; };
 		C40E429F1CBFB18B00F899C1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -108,8 +110,9 @@
 		C48F8B771CB17665008B663D /* Celluloid */ = {
 			isa = PBXGroup;
 			children = (
-				C40E429F1CBFB18B00F899C1 /* Info.plist */,
 				C48F8B781CB17665008B663D /* Celluloid.h */,
+				C40E429F1CBFB18B00F899C1 /* Info.plist */,
+				7C1CF9251D71EECF00FE4F4F /* Photo.swift */,
 				7C83E4811D39785400F52184 /* CelluloidDelegate.swift */,
 				C48F8B941CB176FA008B663D /* CelluloidView.swift */,
 				C4DD635D1CB505E400429307 /* CelluloidSessionController.swift */,
@@ -253,6 +256,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C1CF9261D71EECF00FE4F4F /* Photo.swift in Sources */,
 				C4DD63601CB5287600429307 /* Authorizer.swift in Sources */,
 				C4DD635E1CB505E400429307 /* CelluloidSessionController.swift in Sources */,
 				7C2F7BA01D48E73600E17D37 /* CelluloidCaptureType.swift in Sources */,

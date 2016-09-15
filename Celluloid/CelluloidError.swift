@@ -9,7 +9,7 @@
 /**
  CelluloidError type. All possible camera errors.
  */
-public enum CelluloidError: ErrorProtocol {
+public enum CelluloidError: Error {
     case deviceLockFailed
     case deviceNotSet
     case exposureNotSupported

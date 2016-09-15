@@ -7,5 +7,5 @@
 //
 
 public enum CelluloidCaptureType {
-    case video, photo
+    case livePhoto, photo
 }
