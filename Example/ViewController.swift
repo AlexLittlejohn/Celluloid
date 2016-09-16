@@ -18,7 +18,7 @@ class ViewController: UIViewController {
         view.addSubview(cameraView)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         do {

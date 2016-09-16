@@ -9,92 +9,21 @@
 import UIKit
 import AVFoundation
 
-/**
- Supported media types, currently only Video/Photo
- */
-enum CelluloidMediaType: CustomStringConvertible {
-    case Video
-    
-    var description: String {
-        switch self {
-        case .Video:
-            return AVMediaTypeVideo
-        }
-    }
-}
+public typealias CelluloidSessionStartComplete = AuthorizeCameraComplete
+public typealias CelluloidSessionStopComplete = () -> Void
 
-/**
- Closure signature for camera startup
- */
-public typealias CelluloidSessionStartupComplete = AuthorizeCameraComplete
-
-/**
- The camera session controller. Controls the finer aspects of a camera device.
- */
 public class CelluloidSessionController {
-    /**
-     The session object that manages the camera
-     */
+
     public let session = AVCaptureSession()
+    public let captureSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecJPEG])
     
-    /**
-     The session dispath queue named **com.zero.CelluloidSessionController.Queue**
-     */
-    let sessionQueue = dispatch_queue_create("com.zero.CelluloidSessionController.Queue", DISPATCH_QUEUE_SERIAL)
+    let sessionQueue = DispatchQueue(label: "com.zero.CelluloidSessionController.Queue")
     
-    /**
-     The current camera input
-     
-     Will be nil if the session controller has not yet been started with `start(_:)`
-     */
     var input: AVCaptureDeviceInput!
-    /**
-     The current video output
-     
-     Will be nil if the session controller has not yet been started with `start(_:)`
-     */
-    var movieOutput: AVCaptureMovieFileOutput!
-    /**
-     The current image output
-     
-     Will be nil if the session controller has not yet been started with `start(_:)`
-     */
-    var imageOutput: AVCaptureStillImageOutput!
-    /**
-     The current camera device
-     
-     Will be nil if the session controller has not yet been started with `start(_:)`
-     */
+    var output: AVCapturePhotoOutput!
     var device: AVCaptureDevice!
-    /**
-     Session configuration object, set on initialization
-     */
-    let configuration: CelluloidConfiguration
-    
-    /**
-     Create a new session controller with a video ouput delegate and a configuration object.
-     
-     - paramater **delegate**: The camera video ouput delegate
-     - paramater **configuration**: A configuration object
-     */
-    public init(configuration: CelluloidConfiguration = CelluloidConfiguration()) {
-        self.configuration = configuration
-    }
-    
-    /**
-     This is required to start the camera session. If permission is not given by the user to access the camera the closure paramater will be false. If an error occurs the method will throw one of the following `CelluloidError` types.
-     
-     - VideoOutputDelegateDeallocated
-     - DeviceCreationFailed
-     - InputCreationFailed
-     - ImageOutputCreationFailed
-     - VideoOutputCreationFailed
-     
-     ---
-     
-     - paramater **closure**: A closure that will be called after the session starts up and/or authorization fails
-     */
-    public func start(closure: CelluloidSessionStartupComplete) throws {
+
+    public func start(completion: CelluloidSessionStartComplete) throws {
         try setup()
         authorizeCamera { success in
             if success {
@@ -104,151 +33,79 @@ public class CelluloidSessionController {
             }
             
             async {
-                closure(success)
+                completion(success)
             }
         }
     }
     
-    /**
-     Stops the camera session from running.
-     */
-    public func stop() {
+    public func stop(closure: CelluloidSessionStopComplete) {
         async(sessionQueue) {
             self.session.stopRunning()
+
+            async {
+                closure()
+            }
         }
     }
 }
 
 public extension CelluloidSessionController {
-    /**
-     The current flash mode.
-     
-     Will be nil if the session controller has not yet been started with `start(_:)`
-     */
+
     var flashMode: AVCaptureFlashMode? {
-        return device.flashMode
+        return captureSettings.flashMode
     }
     
-    /**
-     The current focus mode.
-     
-     Will be nil if the session controller has not yet been started with `start(_:)`
-     */
     var focusMode: AVCaptureFocusMode? {
         return device.focusMode
     }
     
-    /**
-     The current exposure mode.
-     
-     Will be nil if the session controller has not yet been started with `start(_:)`
-     */
     var exposureMode: AVCaptureExposureMode? {
         return device.exposureMode
     }
     
-    /**
-     The current camera position.
-     
-     Will be nil if the session controller has not yet been started with `start(_:)`
-     */
     var position: AVCaptureDevicePosition? {
         return device.position
     }
 }
 
 public extension CelluloidSessionController {
-    /**
-     Set the flash to a mode specified in `AVCaptureFlashMode`.
-     
-     Throws:
-     - CelluloidError.FlashNotSupported
-     - CelluloidError.DeviceNotSet
-     - CelluloidError.DeviceLockFailed
-     
-     */
-    public func setFlash(mode mode: AVCaptureFlashMode) throws {
-        try configureDevice { device in
-            guard device.hasFlash && device.isFlashModeSupported(mode) else {
-                throw CelluloidError.FlashNotSupported
-            }
-            
-            device.flashMode = mode
-        }
+
+    public func setFlash(mode: AVCaptureFlashMode) {
+        captureSettings.flashMode = mode
     }
     
-    /**
-     Sets the focus point of interest to the point specified
-     
-     Throws:
-     - CelluloidError.FocusNotSupported
-     - CelluloidError.DeviceNotSet
-     - CelluloidError.DeviceLockFailed
-     
-     ---
-     
-     - paramater **toPoint**: The focus point of interest in reference coordinates - 0...1.
-     
-     */
-    public func setFocus(toPoint toPoint: CGPoint) throws {
+    public func setFocus(toPoint: CGPoint) throws {
         try configureDevice { device in
-            guard device.isFocusModeSupported(.ContinuousAutoFocus) else {
-                throw CelluloidError.FocusNotSupported
+            guard device.isFocusModeSupported(.continuousAutoFocus) else {
+                throw CelluloidError.focusNotSupported
             }
             
-            device.focusMode = .ContinuousAutoFocus
+            device.focusMode = .continuousAutoFocus
             device.focusPointOfInterest = toPoint
         }
     }
     
-    /**
-     Sets the exposure point of interest to the point specified
-     
-     Throws:
-     - CelluloidError.ExposureNotSupported
-     - CelluloidError.DeviceNotSet
-     - CelluloidError.DeviceLockFailed
-     
-     ---
-     
-     - paramater **toPoint**: The exposure point of interest in reference coordinates - 0...1.
-     
-     */
-    public func setExposue(toPoint toPoint: CGPoint) throws {
+    public func setExposue(toPoint: CGPoint) throws {
         try configureDevice { device in
-            guard device.isExposureModeSupported(.ContinuousAutoExposure) else {
-                throw CelluloidError.ExposureNotSupported
+            guard device.isExposureModeSupported(.continuousAutoExposure) else {
+                throw CelluloidError.exposureNotSupported
             }
             
-            device.exposureMode = .ContinuousAutoExposure
+            device.exposureMode = .continuousAutoExposure
             device.exposurePointOfInterest = toPoint
         }
     }
-    
-    /**
-     Set the camera position to a position specified in `AVCaptureDevicePosition`
-     
-     Throws:
-     - CelluloidError.InputNotSet
-     - CelluloidError.DeviceCreationFailed
-     - CelluloidError.InputCreationFailed
-     
-     ---
-     
-     - paramater **position**: The new position for the camera.
-     
-     */
-    public func setCamera(position position: AVCaptureDevicePosition) throws {
+
+    public func setCamera(position: AVCaptureDevicePosition) throws {
         guard let oldInput = input else {
-            throw CelluloidError.InputNotSet
+            throw CelluloidError.inputNotSet
         }
-        
+
+        let newDevice = try deviceWith(position: position)
+        let newInput = try inputFor(session: session, device: device)
+
         session.beginConfiguration()
         session.removeInput(oldInput)
-        
-        let newDevice = try deviceWith(type: .Video, position: position)
-        let newInput = try videoInputFor(session: session, device: device)
-        
         session.addInput(newInput)
         session.commitConfiguration()
         
@@ -256,156 +113,62 @@ public extension CelluloidSessionController {
         device = newDevice
     }
     
-    /**
-     Sets the zoom scale level that will be applied to the preview and the output.
-     
-     Note that zoom is digital only and that high zoom scales will degrade the image output quality.
-     
-     Throws:
-     - CelluloidError.DeviceNotSet
-     - CelluloidError.DeviceLockFailed
-     
-     ---
-     
-     - paramater **zoom**: A float value denoting the desired zoom scale
-     */
-    public func setCamera(zoom zoom: CGFloat) throws {
+    public func setCamera(zoom: CGFloat) throws {
         try configureDevice { device in
             device.videoZoomFactor = max(1.0, min(zoom, device.activeFormat.videoMaxZoomFactor))
         }
     }
 }
 
-private extension CelluloidSessionController {
-    /**
-     Initializes all the requires camera objects
-     
-     If an error occurs the method will throw one of the following `CelluloidError` types.
-     
-     - DeviceCreationFailed
-     - InputCreationFailed
-     - ImageOutputCreationFailed
-     - MovieOutputCreationFailed
-     */
-    private func setup() throws {
+fileprivate extension CelluloidSessionController {
+
+    fileprivate func setup() throws {
         session.beginConfiguration()
-        session.sessionPreset = AVCaptureSessionPresetHigh
-        device = try deviceWith(type: .Video, position: configuration.startingCameraPosition)
-        input = try videoInputFor(session: session, device: device)
-        movieOutput = try movieOutputFor(session: session)
-        imageOutput = try imageOutputFor(session: session)
+        session.sessionPreset = AVCaptureSessionPresetPhoto
+        device = try deviceWith(position: .back)
+        input = try inputFor(session: session, device: device)
+        output = try outputFor(session: session)
         session.commitConfiguration()
     }
     
-    /**
-     Create a capture device using a session and a position
-     
-     Throws:
-     - DeviceCreationFailed
-     
-     ---
-     
-     - paramater **type**: The required media type for the device.
-     - paramater **position**: The required camera position for the device.
-     - returns: A new AVCaptureDevice that fits the type and position
-     */
-    private func deviceWith(type type: CelluloidMediaType, position: AVCaptureDevicePosition) throws -> AVCaptureDevice {
-        guard let devices = AVCaptureDevice.devicesWithMediaType(type.description) as? [AVCaptureDevice], device = devices.filter({ $0.position == position }).first else {
-            throw CelluloidError.DeviceCreationFailed
+    fileprivate func deviceWith(position: AVCaptureDevicePosition) throws -> AVCaptureDevice {
+        guard let devices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) as? [AVCaptureDevice], let device = devices.filter({ $0.position == position }).first else {
+            throw CelluloidError.deviceCreationFailed
         }
 
         return device
     }
     
-    /**
-     Create a video input for the camera
-     
-     Throws:
-     - InputCreationFailed
-     
-     ---
-     
-     - paramater **session**: A capture session used to create the input.
-     - paramater **device**: A device used to create the input.
-     - returns: A new `AVCaptureDeviceInput` for the session and device
-     */
-    private func videoInputFor(session session: AVCaptureSession, device: AVCaptureDevice) throws -> AVCaptureDeviceInput {
-        guard let input = try? AVCaptureDeviceInput(device: device) where session.canAddInput(input) else {
-            throw CelluloidError.InputCreationFailed
+    fileprivate func inputFor(session: AVCaptureSession, device: AVCaptureDevice) throws -> AVCaptureDeviceInput {
+        guard let input = try? AVCaptureDeviceInput(device: device), session.canAddInput(input) else {
+            throw CelluloidError.inputCreationFailed
         }
         
         session.addInput(input)
-        
+
         return input
     }
-    
-    /**
-     Create a movie output for the camera
-     
-     Throws:
-     - MovieOutputCreationFailed
-     
-     ---
-     
-     - paramater **session**: A capture session to create the output for.
-     - returns: A new `AVCaptureMovieFileOutput` for the session and delegate
-     */
-    private func movieOutputFor(session session: AVCaptureSession) throws -> AVCaptureMovieFileOutput {
-        let output = AVCaptureMovieFileOutput()
         
-        guard session.canAddOutput(output) else {
-            throw CelluloidError.MovieOutputCreationFailed
-        }
-        
-        session.addOutput(output)
-        
-        return output
-    }
-    
-    /**
-     Create an image output for the camera
-     
-     Throws:
-     - ImageOutputCreationFailed
-     
-     ---
-     
-     - paramater **session**: A capture session to create the output for.
-     - returns: A new `AVCaptureStillImageOutput` for the session and device
-     */
-    private func imageOutputFor(session session: AVCaptureSession) throws -> AVCaptureStillImageOutput {
-        let output = AVCaptureStillImageOutput()
-        output.outputSettings = configuration.imageOutputSettings
-        
-        guard session.canAddOutput(output) else {
-            throw CelluloidError.ImageOutputCreationFailed
-        }
-        
-        return output
-    }
-}
+    fileprivate func outputFor(session: AVCaptureSession) throws -> AVCapturePhotoOutput {
+        let output = AVCapturePhotoOutput()
 
-private extension CelluloidSessionController {
-    /**
-     Helper for configuring the device
-     
-     Throws:
-     - DeviceNotSet
-     - DeviceLockFailed
-     
-     ---
-     
-     - paramater **closure**: A throwable closure to call between device configuration locks.
-     */
-    private func configureDevice(closure: (AVCaptureDevice) throws -> Void ) throws {
+        guard session.canAddOutput(output) else {
+            throw CelluloidError.imageOutputCreationFailed
+        }
+        
+        return output
+    }
+
+    fileprivate func configureDevice(closure: (AVCaptureDevice) throws -> Void ) throws {
         
         guard let device = device else {
-            throw CelluloidError.DeviceNotSet
+            throw CelluloidError.deviceNotSet
         }
         
         do { try device.lockForConfiguration() } catch {
-            throw CelluloidError.DeviceLockFailed
+            throw CelluloidError.deviceLockFailed
         }
+
         try closure(device)
         device.unlockForConfiguration()
     }
