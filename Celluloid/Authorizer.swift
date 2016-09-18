@@ -17,7 +17,7 @@ public typealias AuthorizeCameraComplete = (Bool) -> Void
 /**
  Camera authorization function.
  */
-internal func authorizeCamera(_ completion: AuthorizeCameraComplete) {
+internal func authorizeCamera(_ completion: @escaping AuthorizeCameraComplete) {
     
     guard AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) != .authorized else {
         completion(true)

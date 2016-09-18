@@ -1,5 +1,5 @@
 //
-//  CelluloidSessionController.swift
+//  SessionController.swift
 //  Celluloid
 //
 //  Created by Alex Littlejohn on 2016/04/06.
@@ -9,25 +9,25 @@
 import UIKit
 import AVFoundation
 
-public typealias CelluloidSessionStartComplete = AuthorizeCameraComplete
-public typealias CelluloidSessionStopComplete = () -> Void
+public typealias SessionStartComplete = AuthorizeCameraComplete
+public typealias SessionStopComplete = () -> Void
 
-public class CelluloidSessionController {
+public class SessionController {
 
     public let session = AVCaptureSession()
     public let captureSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecJPEG])
     
-    let sessionQueue = DispatchQueue(label: "com.zero.CelluloidSessionController.Queue")
+    let sessionQueue = DispatchQueue(label: "com.zero.SessionController.Queue")
     
     var input: AVCaptureDeviceInput!
     var output: AVCapturePhotoOutput!
     var device: AVCaptureDevice!
 
-    public func start(completion: CelluloidSessionStartComplete) throws {
+    public func start(completion: @escaping SessionStartComplete) throws {
         try setup()
         authorizeCamera { success in
             if success {
-                async(self.sessionQueue) {
+                async(queue: self.sessionQueue) {
                     self.session.startRunning()
                 }
             }
@@ -38,8 +38,8 @@ public class CelluloidSessionController {
         }
     }
     
-    public func stop(closure: CelluloidSessionStopComplete) {
-        async(sessionQueue) {
+    public func stop(closure: @escaping SessionStopComplete) {
+        async(queue: sessionQueue) {
             self.session.stopRunning()
 
             async {
@@ -49,7 +49,7 @@ public class CelluloidSessionController {
     }
 }
 
-public extension CelluloidSessionController {
+public extension SessionController {
 
     var flashMode: AVCaptureFlashMode? {
         return captureSettings.flashMode
@@ -68,37 +68,15 @@ public extension CelluloidSessionController {
     }
 }
 
-public extension CelluloidSessionController {
+public extension SessionController {
 
     public func setFlash(mode: AVCaptureFlashMode) {
         captureSettings.flashMode = mode
     }
-    
-    public func setFocus(toPoint: CGPoint) throws {
-        try configureDevice { device in
-            guard device.isFocusModeSupported(.continuousAutoFocus) else {
-                throw CelluloidError.focusNotSupported
-            }
-            
-            device.focusMode = .continuousAutoFocus
-            device.focusPointOfInterest = toPoint
-        }
-    }
-    
-    public func setExposue(toPoint: CGPoint) throws {
-        try configureDevice { device in
-            guard device.isExposureModeSupported(.continuousAutoExposure) else {
-                throw CelluloidError.exposureNotSupported
-            }
-            
-            device.exposureMode = .continuousAutoExposure
-            device.exposurePointOfInterest = toPoint
-        }
-    }
 
     public func setCamera(position: AVCaptureDevicePosition) throws {
         guard let oldInput = input else {
-            throw CelluloidError.inputNotSet
+            throw CelluloidError.deviceConfigurationFailed
         }
 
         let newDevice = try deviceWith(position: position)
@@ -120,9 +98,9 @@ public extension CelluloidSessionController {
     }
 }
 
-fileprivate extension CelluloidSessionController {
+internal extension SessionController {
 
-    fileprivate func setup() throws {
+    internal func setup() throws {
         session.beginConfiguration()
         session.sessionPreset = AVCaptureSessionPresetPhoto
         device = try deviceWith(position: .back)
@@ -131,17 +109,17 @@ fileprivate extension CelluloidSessionController {
         session.commitConfiguration()
     }
     
-    fileprivate func deviceWith(position: AVCaptureDevicePosition) throws -> AVCaptureDevice {
+    internal func deviceWith(position: AVCaptureDevicePosition) throws -> AVCaptureDevice {
         guard let devices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) as? [AVCaptureDevice], let device = devices.filter({ $0.position == position }).first else {
-            throw CelluloidError.deviceCreationFailed
+            throw CelluloidError.deviceConfigurationFailed
         }
 
         return device
     }
     
-    fileprivate func inputFor(session: AVCaptureSession, device: AVCaptureDevice) throws -> AVCaptureDeviceInput {
+    internal func inputFor(session: AVCaptureSession, device: AVCaptureDevice) throws -> AVCaptureDeviceInput {
         guard let input = try? AVCaptureDeviceInput(device: device), session.canAddInput(input) else {
-            throw CelluloidError.inputCreationFailed
+            throw CelluloidError.deviceConfigurationFailed
         }
         
         session.addInput(input)
@@ -149,24 +127,24 @@ fileprivate extension CelluloidSessionController {
         return input
     }
         
-    fileprivate func outputFor(session: AVCaptureSession) throws -> AVCapturePhotoOutput {
+    internal func outputFor(session: AVCaptureSession) throws -> AVCapturePhotoOutput {
         let output = AVCapturePhotoOutput()
 
         guard session.canAddOutput(output) else {
-            throw CelluloidError.imageOutputCreationFailed
+            throw CelluloidError.deviceConfigurationFailed
         }
         
         return output
     }
 
-    fileprivate func configureDevice(closure: (AVCaptureDevice) throws -> Void ) throws {
+    internal func configureDevice(closure: (AVCaptureDevice) throws -> Void ) throws {
         
         guard let device = device else {
-            throw CelluloidError.deviceNotSet
+            throw CelluloidError.deviceConfigurationFailed
         }
         
         do { try device.lockForConfiguration() } catch {
-            throw CelluloidError.deviceLockFailed
+            throw CelluloidError.deviceConfigurationFailed
         }
 
         try closure(device)

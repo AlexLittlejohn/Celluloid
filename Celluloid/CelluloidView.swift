@@ -11,7 +11,7 @@ import AVFoundation
 
 public class CelluloidView: UIView {
 
-    lazy var sessionController: CelluloidSessionController = CelluloidSessionController()
+    lazy var sessionController: SessionController = SessionController()
     
     var preview: AVCaptureVideoPreviewLayer?
     
@@ -25,11 +25,11 @@ public class CelluloidView: UIView {
         preview = createPreview(session: sessionController.session)
     }
     
-    public func startCamera(closure: CelluloidSessionStartComplete) throws {
+    public func startCamera(closure: @escaping SessionStartComplete) throws {
         try sessionController.start(completion: closure)
     }
     
-    public func stopCamera(closure: CelluloidSessionStopComplete) {
+    public func stopCamera(closure: @escaping SessionStopComplete) {
         sessionController.stop(closure: closure)
     }
     

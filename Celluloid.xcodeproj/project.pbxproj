@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7C1CF9261D71EECF00FE4F4F /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C1CF9251D71EECF00FE4F4F /* Photo.swift */; };
-		7C2F7BA01D48E73600E17D37 /* CelluloidCaptureType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2F7B9F1D48E73600E17D37 /* CelluloidCaptureType.swift */; };
-		7C83E4821D39785400F52184 /* CelluloidDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C83E4811D39785400F52184 /* CelluloidDelegate.swift */; };
+		7C2F63881D8C8D6200389D80 /* SessionController+Exposure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2F63871D8C8D6200389D80 /* SessionController+Exposure.swift */; };
+		7C2F638A1D8C9AE700389D80 /* SessionController+Focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */; };
+		7CA651691D8C358800F5B1B1 /* Array+NextOrFirst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */; };
+		7CE713261D8C2BF200D7200A /* SessionController+WhiteBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */; };
 		C40E42991CBFB0A000F899C1 /* Celluloid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C48F8B761CB17665008B663D /* Celluloid.framework */; };
 		C40E429B1CBFB0AB00F899C1 /* Celluloid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C48F8B761CB17665008B663D /* Celluloid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C40E42A61CBFBF7600F899C1 /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40E42A51CBFBF7600F899C1 /* Async.swift */; };
@@ -21,7 +22,7 @@
 		C48F8B8F1CB1767A008B663D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C48F8B8D1CB1767A008B663D /* LaunchScreen.storyboard */; };
 		C48F8B951CB176FA008B663D /* CelluloidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48F8B941CB176FA008B663D /* CelluloidView.swift */; };
 		C48F8B971CB17ADA008B663D /* CelluloidError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48F8B961CB17ADA008B663D /* CelluloidError.swift */; };
-		C4DD635E1CB505E400429307 /* CelluloidSessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD635D1CB505E400429307 /* CelluloidSessionController.swift */; };
+		C4DD635E1CB505E400429307 /* SessionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD635D1CB505E400429307 /* SessionController.swift */; };
 		C4DD63601CB5287600429307 /* Authorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DD635F1CB5287600429307 /* Authorizer.swift */; };
 /* End PBXBuildFile section */
 
@@ -50,9 +51,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		7C1CF9251D71EECF00FE4F4F /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
-		7C2F7B9F1D48E73600E17D37 /* CelluloidCaptureType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelluloidCaptureType.swift; sourceTree = "<group>"; };
-		7C83E4811D39785400F52184 /* CelluloidDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelluloidDelegate.swift; sourceTree = "<group>"; };
+		7C2F63871D8C8D6200389D80 /* SessionController+Exposure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Exposure.swift"; sourceTree = "<group>"; };
+		7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Focus.swift"; sourceTree = "<group>"; };
+		7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+NextOrFirst.swift"; sourceTree = "<group>"; };
+		7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+WhiteBalance.swift"; sourceTree = "<group>"; };
 		C40E429F1CBFB18B00F899C1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C40E42A51CBFBF7600F899C1 /* Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Async.swift; sourceTree = "<group>"; };
 		C48F8B761CB17665008B663D /* Celluloid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Celluloid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,7 +68,7 @@
 		C48F8B901CB1767A008B663D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C48F8B941CB176FA008B663D /* CelluloidView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelluloidView.swift; sourceTree = "<group>"; };
 		C48F8B961CB17ADA008B663D /* CelluloidError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelluloidError.swift; sourceTree = "<group>"; };
-		C4DD635D1CB505E400429307 /* CelluloidSessionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelluloidSessionController.swift; sourceTree = "<group>"; };
+		C4DD635D1CB505E400429307 /* SessionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionController.swift; sourceTree = "<group>"; };
 		C4DD635F1CB5287600429307 /* Authorizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Authorizer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -110,14 +112,15 @@
 		C48F8B771CB17665008B663D /* Celluloid */ = {
 			isa = PBXGroup;
 			children = (
-				C48F8B781CB17665008B663D /* Celluloid.h */,
 				C40E429F1CBFB18B00F899C1 /* Info.plist */,
-				7C1CF9251D71EECF00FE4F4F /* Photo.swift */,
-				7C83E4811D39785400F52184 /* CelluloidDelegate.swift */,
+				C48F8B781CB17665008B663D /* Celluloid.h */,
 				C48F8B941CB176FA008B663D /* CelluloidView.swift */,
-				C4DD635D1CB505E400429307 /* CelluloidSessionController.swift */,
+				C4DD635D1CB505E400429307 /* SessionController.swift */,
+				7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */,
+				7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */,
+				7C2F63871D8C8D6200389D80 /* SessionController+Exposure.swift */,
+				7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */,
 				C48F8B961CB17ADA008B663D /* CelluloidError.swift */,
-				7C2F7B9F1D48E73600E17D37 /* CelluloidCaptureType.swift */,
 				C4DD635F1CB5287600429307 /* Authorizer.swift */,
 				C40E42A51CBFBF7600F899C1 /* Async.swift */,
 			);
@@ -195,19 +198,15 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Alex Littlejohn";
 				TargetAttributes = {
 					C48F8B751CB17665008B663D = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = GAPQH4AM76;
-						DevelopmentTeamName = "Alex Littlejohn (Personal Team)";
 						LastSwiftMigration = 0800;
 					};
 					C48F8B811CB1767A008B663D = {
 						CreatedOnToolsVersion = 7.3;
-						DevelopmentTeam = GAPQH4AM76;
-						DevelopmentTeamName = "Alex Littlejohn (Personal Team)";
 						LastSwiftMigration = 0800;
 					};
 				};
@@ -256,13 +255,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C1CF9261D71EECF00FE4F4F /* Photo.swift in Sources */,
 				C4DD63601CB5287600429307 /* Authorizer.swift in Sources */,
-				C4DD635E1CB505E400429307 /* CelluloidSessionController.swift in Sources */,
-				7C2F7BA01D48E73600E17D37 /* CelluloidCaptureType.swift in Sources */,
+				C4DD635E1CB505E400429307 /* SessionController.swift in Sources */,
+				7C2F63881D8C8D6200389D80 /* SessionController+Exposure.swift in Sources */,
 				C48F8B971CB17ADA008B663D /* CelluloidError.swift in Sources */,
-				7C83E4821D39785400F52184 /* CelluloidDelegate.swift in Sources */,
+				7CE713261D8C2BF200D7200A /* SessionController+WhiteBalance.swift in Sources */,
+				7C2F638A1D8C9AE700389D80 /* SessionController+Focus.swift in Sources */,
 				C48F8B951CB176FA008B663D /* CelluloidView.swift in Sources */,
+				7CA651691D8C358800F5B1B1 /* Array+NextOrFirst.swift in Sources */,
 				C40E42A61CBFBF7600F899C1 /* Async.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,13 +394,13 @@
 		C48F8B7C1CB17665008B663D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Celluloid/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -418,13 +418,13 @@
 		C48F8B7D1CB17665008B663D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Celluloid/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -432,7 +432,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.zero.Celluloid;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -442,10 +441,9 @@
 		C48F8B921CB1767A008B663D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Example/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zero.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -456,14 +454,12 @@
 		C48F8B931CB1767A008B663D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Example/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.zero.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
