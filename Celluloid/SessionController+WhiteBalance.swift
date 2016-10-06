@@ -26,6 +26,11 @@ public extension SessionController {
     /// - throws: CelluloidError.deviceConfigurationNotSupported
     public func setWhiteBalance(mode: AVCaptureWhiteBalanceMode) throws {
         try configureDevice { device in
+
+            guard device.whiteBalanceMode != mode else {
+                return
+            }
+
             guard device.isWhiteBalanceModeSupported(mode) else {
                 throw CelluloidError.deviceConfigurationNotSupported
             }

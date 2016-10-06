@@ -9,62 +9,58 @@
 import UIKit
 import AVFoundation
 
-public typealias SessionStartComplete = AuthorizeCameraComplete
+public typealias SessionStartComplete = AuthorizeComplete
 public typealias SessionStopComplete = () -> Void
 
 public class SessionController {
 
     public let session = AVCaptureSession()
     public let captureSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecJPEG])
-    
-    let sessionQueue = DispatchQueue(label: "com.zero.SessionController.Queue")
+    public var availableDevices: [AVCaptureDevice] {
+        return discovery?.devices ?? []
+    }
+    public var flashMode: AVCaptureFlashMode = .off
+    public var isLensStabilizationEnabled: Bool = false
+
+    let sessionQueue = DispatchQueue(label: "com.Celluloid.SessionController.Queue")
     
     var input: AVCaptureDeviceInput!
     var output: AVCapturePhotoOutput!
     var device: AVCaptureDevice!
 
+    let discovery = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDuoCamera, .builtInTelephotoCamera], mediaType: AVMediaTypeVideo, position: .unspecified)
+
     public func start(completion: @escaping SessionStartComplete) throws {
-        try setup()
         authorizeCamera { success in
             if success {
-                async(queue: self.sessionQueue) {
+                self.sessionQueue.sync {
                     self.session.startRunning()
+
+                    DispatchQueue.main.async {
+                        completion(success)
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion(success)
                 }
             }
-            
-            async {
-                completion(success)
-            }
         }
     }
     
-    public func stop(closure: @escaping SessionStopComplete) {
-        async(queue: sessionQueue) {
+    public func stop() {
+        sessionQueue.sync {
             self.session.stopRunning()
-
-            async {
-                closure()
-            }
         }
     }
-}
 
-public extension SessionController {
+    func resetToDefaults() {
+        let autoValue = NSNumber(integerLiteral: AVCaptureFlashMode.auto.rawValue)
+        let autoAvailable: Bool = device.isFlashAvailable && output.supportedFlashModes.contains(autoValue)
 
-    var flashMode: AVCaptureFlashMode? {
-        return captureSettings.flashMode
-    }
-    
-    var focusMode: AVCaptureFocusMode? {
-        return device.focusMode
-    }
-    
-    var exposureMode: AVCaptureExposureMode? {
-        return device.exposureMode
-    }
-    
-    var position: AVCaptureDevicePosition? {
-        return device.position
+        flashMode = autoAvailable ? .auto : .off
+
+        isLensStabilizationEnabled = false
     }
 }
 
@@ -74,26 +70,9 @@ public extension SessionController {
         captureSettings.flashMode = mode
     }
 
-    public func setCamera(position: AVCaptureDevicePosition) throws {
-        guard let oldInput = input else {
-            throw CelluloidError.deviceConfigurationFailed
-        }
-
-        let newDevice = try deviceWith(position: position)
-        let newInput = try inputFor(session: session, device: device)
-
-        session.beginConfiguration()
-        session.removeInput(oldInput)
-        session.addInput(newInput)
-        session.commitConfiguration()
-        
-        input = newInput
-        device = newDevice
-    }
-    
-    public func setCamera(zoom: CGFloat) throws {
+    public func zoom(to level: CGFloat) throws {
         try configureDevice { device in
-            device.videoZoomFactor = max(1.0, min(zoom, device.activeFormat.videoMaxZoomFactor))
+            device.videoZoomFactor = max(1.0, min(level, device.activeFormat.videoMaxZoomFactor))
         }
     }
 }
@@ -103,21 +82,33 @@ internal extension SessionController {
     internal func setup() throws {
         session.beginConfiguration()
         session.sessionPreset = AVCaptureSessionPresetPhoto
-        device = try deviceWith(position: .back)
-        input = try inputFor(session: session, device: device)
+
+        guard let videoDevice = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .unspecified) else {
+            throw CelluloidError.deviceConfigurationFailed
+        }
+
+        guard let audioDevice = AVCaptureDevice.defaultDevice(withDeviceType: .builtInMicrophone, mediaType: AVMediaTypeAudio, position: .unspecified) else {
+            throw CelluloidError.deviceConfigurationFailed
+        }
+
+        input = try addInputFor(session: session, device: videoDevice)
+        let _ = try addInputFor(session: session, device: audioDevice)
+
+        device = videoDevice
         output = try outputFor(session: session)
         session.commitConfiguration()
     }
     
     internal func deviceWith(position: AVCaptureDevicePosition) throws -> AVCaptureDevice {
-        guard let devices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo) as? [AVCaptureDevice], let device = devices.filter({ $0.position == position }).first else {
+
+        guard let device = availableDevices.filter({ $0.position == position }).first else {
             throw CelluloidError.deviceConfigurationFailed
         }
 
         return device
     }
     
-    internal func inputFor(session: AVCaptureSession, device: AVCaptureDevice) throws -> AVCaptureDeviceInput {
+    internal func addInputFor(session: AVCaptureSession, device: AVCaptureDevice) throws -> AVCaptureDeviceInput {
         guard let input = try? AVCaptureDeviceInput(device: device), session.canAddInput(input) else {
             throw CelluloidError.deviceConfigurationFailed
         }

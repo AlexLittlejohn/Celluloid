@@ -10,19 +10,40 @@ import UIKit
 import AVFoundation
 
 /**
- Camera authorization closure signature.
+ Authorization closure signature.
  */
-public typealias AuthorizeCameraComplete = (Bool) -> Void
+public typealias AuthorizeComplete = (Bool) -> Void
 
 /**
- Camera authorization function.
+ Camera authorization function. Can call the closure on an arbitrary thread
  */
-internal func authorizeCamera(_ completion: @escaping AuthorizeCameraComplete) {
-    
-    guard AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo) != .authorized else {
+internal func authorizeCamera(_ completion: @escaping AuthorizeComplete) {
+
+    let authorizationStatus = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
+
+    switch authorizationStatus {
+    case .authorized:
         completion(true)
-        return
+    case .notDetermined:
+        AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: completion)
+    default:
+        completion(false)
     }
-    
-    AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo) { completion($0) }
+}
+
+/**
+ Audio authorization function. Can call the closure on an arbitrary thread
+ */
+internal func authorizeMicrophone(_ completion: @escaping AuthorizeComplete) {
+
+    let authorizationStatus = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeAudio)
+
+    switch authorizationStatus {
+    case .authorized:
+        completion(true)
+    case .denied, .restricted:
+        completion(false)
+    case .notDetermined:
+        AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeAudio, completionHandler: completion)
+    }
 }

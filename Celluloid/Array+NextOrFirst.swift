@@ -10,7 +10,7 @@ import Foundation
 
 extension Array where Element : Equatable {
 
-    /// Returns the next element in an array of Equatable elements if the element provided is at the end otherwise return the first element
+    /// Returns the next element in an array of Equatable elements if the element provided is at the end then return the first element
     ///
     /// - parameter after: The current element to search after
     ///

@@ -11,9 +11,9 @@
 		7C2F638A1D8C9AE700389D80 /* SessionController+Focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */; };
 		7CA651691D8C358800F5B1B1 /* Array+NextOrFirst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */; };
 		7CE713261D8C2BF200D7200A /* SessionController+WhiteBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */; };
+		7CF3E06E1DA446900023023C /* SessionController+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF3E06D1DA446900023023C /* SessionController+Camera.swift */; };
 		C40E42991CBFB0A000F899C1 /* Celluloid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C48F8B761CB17665008B663D /* Celluloid.framework */; };
 		C40E429B1CBFB0AB00F899C1 /* Celluloid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C48F8B761CB17665008B663D /* Celluloid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		C40E42A61CBFBF7600F899C1 /* Async.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40E42A51CBFBF7600F899C1 /* Async.swift */; };
 		C48F8B791CB17665008B663D /* Celluloid.h in Headers */ = {isa = PBXBuildFile; fileRef = C48F8B781CB17665008B663D /* Celluloid.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C48F8B851CB1767A008B663D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48F8B841CB1767A008B663D /* AppDelegate.swift */; };
 		C48F8B871CB1767A008B663D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48F8B861CB1767A008B663D /* ViewController.swift */; };
@@ -55,8 +55,8 @@
 		7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Focus.swift"; sourceTree = "<group>"; };
 		7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+NextOrFirst.swift"; sourceTree = "<group>"; };
 		7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+WhiteBalance.swift"; sourceTree = "<group>"; };
+		7CF3E06D1DA446900023023C /* SessionController+Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Camera.swift"; sourceTree = "<group>"; };
 		C40E429F1CBFB18B00F899C1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C40E42A51CBFBF7600F899C1 /* Async.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Async.swift; sourceTree = "<group>"; };
 		C48F8B761CB17665008B663D /* Celluloid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Celluloid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C48F8B781CB17665008B663D /* Celluloid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Celluloid.h; sourceTree = "<group>"; };
 		C48F8B821CB1767A008B663D /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,14 +115,14 @@
 				C40E429F1CBFB18B00F899C1 /* Info.plist */,
 				C48F8B781CB17665008B663D /* Celluloid.h */,
 				C48F8B941CB176FA008B663D /* CelluloidView.swift */,
+				C48F8B961CB17ADA008B663D /* CelluloidError.swift */,
 				C4DD635D1CB505E400429307 /* SessionController.swift */,
 				7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */,
 				7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */,
 				7C2F63871D8C8D6200389D80 /* SessionController+Exposure.swift */,
+				7CF3E06D1DA446900023023C /* SessionController+Camera.swift */,
 				7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */,
-				C48F8B961CB17ADA008B663D /* CelluloidError.swift */,
 				C4DD635F1CB5287600429307 /* Authorizer.swift */,
-				C40E42A51CBFBF7600F899C1 /* Async.swift */,
 			);
 			path = Celluloid;
 			sourceTree = "<group>";
@@ -257,13 +257,13 @@
 			files = (
 				C4DD63601CB5287600429307 /* Authorizer.swift in Sources */,
 				C4DD635E1CB505E400429307 /* SessionController.swift in Sources */,
+				7CF3E06E1DA446900023023C /* SessionController+Camera.swift in Sources */,
 				7C2F63881D8C8D6200389D80 /* SessionController+Exposure.swift in Sources */,
 				C48F8B971CB17ADA008B663D /* CelluloidError.swift in Sources */,
 				7CE713261D8C2BF200D7200A /* SessionController+WhiteBalance.swift in Sources */,
 				7C2F638A1D8C9AE700389D80 /* SessionController+Focus.swift in Sources */,
 				C48F8B951CB176FA008B663D /* CelluloidView.swift in Sources */,
 				7CA651691D8C358800F5B1B1 /* Array+NextOrFirst.swift in Sources */,
-				C40E42A61CBFBF7600F899C1 /* Async.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

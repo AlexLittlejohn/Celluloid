@@ -16,21 +16,34 @@ public extension SessionController {
 
     /// Set the exposure mode of the camera device
     ///
+    /// Setting the mode to custom exposure will override the current flash setting to off
+    ///
     /// - parameter mode: AVCaptureExposureMode
     ///
     /// - throws: CelluloidError.deviceConfigurationFailed
     /// - throws: CelluloidError.deviceConfigurationNotSupported
     public func setExposure(mode: AVCaptureExposureMode) throws {
         try configureDevice { device in
+
+            guard device.exposureMode != mode else {
+                return
+            }
+
             guard device.isExposureModeSupported(mode) else {
                 throw CelluloidError.deviceConfigurationNotSupported
             }
+
             device.exposureMode = mode
+
+            if mode == .custom {
+                flashMode = .off
+            }
         }
     }
 
-
     /// Set the exposure duration
+    ///
+    /// Changing the exposure values will override the current flash setting to off
     ///
     /// - parameter duration: A value in 0...1
     ///
@@ -43,9 +56,10 @@ public extension SessionController {
             let newDurationSeconds = d * (maxDurationSeconds - minDurationSeconds) + minDurationSeconds
 
             device.setExposureModeCustomWithDuration(CMTimeMakeWithSeconds(newDurationSeconds, 1000 * 1000 * 1000), iso: AVCaptureISOCurrent, completionHandler: nil)
+
+            flashMode = .off
         }
     }
-
 
     /// Set the exposure bias in EV units
     ///
@@ -59,8 +73,9 @@ public extension SessionController {
         }
     }
 
-
     /// Set the device ISO
+    ///
+    /// Changing the exposure values will override the current flash setting to off
     ///
     /// - parameter iso: A value in device.activeFormat.minISO...device.activeFormat.maxISO
     ///
@@ -69,6 +84,8 @@ public extension SessionController {
         try configureDevice { device in
             let _iso = min(max(device.activeFormat.minISO, Float(iso)), device.activeFormat.maxISO)
             device.setExposureModeCustomWithDuration(AVCaptureExposureDurationCurrent, iso: _iso, completionHandler: nil)
+
+            flashMode = .off
         }
     }
 }

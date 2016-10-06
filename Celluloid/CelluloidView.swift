@@ -11,26 +11,22 @@ import AVFoundation
 
 public class CelluloidView: UIView {
 
-    lazy var sessionController: SessionController = SessionController()
+    lazy var controller: SessionController = SessionController()
     
     var preview: AVCaptureVideoPreviewLayer?
-    
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        preview = createPreview(session: sessionController.session)
+
+    public func start(closure: @escaping SessionStartComplete) throws {
+        try controller.start { success in
+            if success {
+                self.preview = self.createPreview(session: self.controller.session)
+            }
+
+            closure(success)
+        }
     }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        preview = createPreview(session: sessionController.session)
-    }
-    
-    public func startCamera(closure: @escaping SessionStartComplete) throws {
-        try sessionController.start(completion: closure)
-    }
-    
-    public func stopCamera(closure: @escaping SessionStopComplete) {
-        sessionController.stop(closure: closure)
+
+    public func stop() {
+        controller.stop()
     }
     
     public override func layoutSubviews() {
@@ -40,38 +36,26 @@ public class CelluloidView: UIView {
 }
 
 public extension CelluloidView {
-    var flashMode: AVCaptureFlashMode? {
-        return sessionController.flashMode
-    }
-    
-    var focusMode: AVCaptureFocusMode? {
-        return sessionController.focusMode
-    }
-    
-    var exposureMode: AVCaptureExposureMode? {
-        return sessionController.exposureMode
-    }
-    
-    var position: AVCaptureDevicePosition? {
-        return sessionController.position
+    var flashMode: AVCaptureFlashMode {
+        return controller.flashMode
     }
 }
 
 public extension CelluloidView {
 
     public func cycleFlash() -> AVCaptureFlashMode {
-        let mode = nextFlash(mode: flashMode ?? .auto)
-        sessionController.setFlash(mode: mode)
+        let mode = nextFlash(mode: flashMode)
+        controller.setFlash(mode: mode)
         return mode
     }
 
     internal func nextFlash(mode: AVCaptureFlashMode) -> AVCaptureFlashMode {
 
-        guard sessionController.device.isFlashAvailable else {
+        guard let device = controller.device, device.isFlashAvailable else {
             return .off
         }
 
-        let availableModes = sessionController.output.supportedFlashModes
+        let availableModes = controller.output.supportedFlashModes
 
         let newMode: AVCaptureFlashMode
 
@@ -91,25 +75,25 @@ public extension CelluloidView {
         return newMode
     }
 
-    public func setFocus(toPoint: CGPoint) throws {
-        // - focus points are in 0...1, not screen pixels
-        let focusPoint = CGPoint(x: toPoint.x / frame.width, y: toPoint.y / frame.height)
-        try sessionController.setFocus(toPoint: focusPoint)
+    public func setPointOfInterest(toPoint: CGPoint) throws {
+
+        // points of interest are in 0...1, not screen pixels
+        let point = CGPoint(x: toPoint.x / frame.width, y: toPoint.y / frame.height)
+        try controller.setPointOfInterest(toPoint: point)
     }
 
-    public func setExposue(toPoint: CGPoint) throws {
-        // - exposure points are in 0...1, not screen pixels
-        let exposurePoint = CGPoint(x: toPoint.x / frame.width, y: toPoint.y / frame.height)
-        try sessionController.setExposue(toPoint: exposurePoint)
+    public func cycleCamera() throws {
+
+        guard let device = controller.device,
+            let newDevice = controller.availableDevices.nextOrFirst(after: device) else {
+            throw CelluloidError.deviceConfigurationFailed
+        }
+
+        try controller.switchTo(newDevice: newDevice)
     }
 
-    public func swapCameraPosition() throws {
-        let newPosition: AVCaptureDevicePosition = position == .front ? .back : .front
-        try sessionController.setCamera(position: newPosition)
-    }
-
-    public func setCamera(zoom: CGFloat) throws {
-        try sessionController.setCamera(zoom: zoom)
+    public func zoom(to level: CGFloat) throws {
+        try controller.zoom(to: level)
     }
 }
 
