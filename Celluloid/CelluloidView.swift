@@ -11,11 +11,27 @@ import AVFoundation
 
 public class CelluloidView: UIView {
 
-    lazy var controller: SessionController = SessionController()
+    lazy var controller = SessionController()
     
     var preview: AVCaptureVideoPreviewLayer?
 
-    public func start(closure: @escaping SessionStartComplete) throws {
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+
+    func commonInit() {
+        setup()
+    }
+
+    public func start(_ closure: @escaping SessionStartComplete) throws {
+        
+
         try controller.start { success in
             if success {
                 self.preview = self.createPreview(session: self.controller.session)
@@ -31,20 +47,21 @@ public class CelluloidView: UIView {
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        preview?.frame = layer.bounds
+        preview?.frame = bounds
     }
-}
 
-public extension CelluloidView {
-    var flashMode: AVCaptureFlashMode {
-        return controller.flashMode
+    open func animateCapture() {
+        alpha = 0
+        UIView.animate(withDuration: 0.25) { 
+            self.alpha = 1
+        }
     }
 }
 
 public extension CelluloidView {
 
     public func cycleFlash() -> AVCaptureFlashMode {
-        let mode = nextFlash(mode: flashMode)
+        let mode = nextFlash(mode: controller.flashMode)
         controller.setFlash(mode: mode)
         return mode
     }
@@ -92,12 +109,58 @@ public extension CelluloidView {
         try controller.switchTo(newDevice: newDevice)
     }
 
-    public func zoom(to level: CGFloat) throws {
-        try controller.zoom(to: level)
+    public func zoomWith(velocity: CGFloat) throws {
+
+        guard let device = controller.device else {
+            throw CelluloidError.deviceConfigurationFailed
+        }
+
+        guard !velocity.isNaN else {
+            return
+        }
+
+        let velocityFactor: CGFloat = 5.0
+        let desiredZoomFactor = device.videoZoomFactor + atan2(velocity, velocityFactor)
+
+        try controller.zoom(to: desiredZoomFactor)
     }
 }
 
 extension CelluloidView {
+
+    func setup() {
+        let zoomGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoom(gesture:)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap(gesture:)))
+        let doubleTapGesture = UITapGestureRecognizer(target: self, action:#selector(doubleTap(gesture:)))
+
+        doubleTapGesture.numberOfTapsRequired = 2
+
+        addGestureRecognizer(zoomGesture)
+        addGestureRecognizer(tapGesture)
+        addGestureRecognizer(doubleTapGesture)
+
+        isUserInteractionEnabled = true
+    }
+
+    func zoom(gesture: UIPinchGestureRecognizer) {
+        let velocity = gesture.velocity
+        try? zoomWith(velocity: velocity)
+    }
+
+    func tap(gesture: UITapGestureRecognizer) {
+        let point = gesture.location(in: self)
+        try? setPointOfInterest(toPoint: point)
+    }
+
+    func doubleTap(gesture: UITapGestureRecognizer) {
+        guard let orientation = preview?.connection.videoOrientation else {
+            return
+        }
+
+        controller.capturePhoto(previewOrientation: orientation, willCapture: animateCapture) { asset in
+
+        }
+    }
 
     func createPreview(session: AVCaptureSession) -> AVCaptureVideoPreviewLayer? {
         guard let preview = AVCaptureVideoPreviewLayer(session: session) else {
@@ -105,7 +168,7 @@ extension CelluloidView {
         }
 
         preview.videoGravity = AVLayerVideoGravityResizeAspectFill
-        preview.frame = layer.bounds
+        preview.frame = bounds
         
         layer.addSublayer(preview)
         

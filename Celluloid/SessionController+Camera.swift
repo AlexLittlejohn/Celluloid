@@ -78,10 +78,10 @@ public extension SessionController {
     public func setLensStabilisation(enabled: Bool) {
         guard let output = output, output.isLensStabilizationDuringBracketedCaptureSupported else {
 
-            isLensStabilizationEnabled = false
+            lensStabilizationEnabled = false
             return
         }
 
-        isLensStabilizationEnabled = enabled
+        lensStabilizationEnabled = enabled
     }
 }

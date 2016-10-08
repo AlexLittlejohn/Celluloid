@@ -9,9 +9,11 @@
 /* Begin PBXBuildFile section */
 		7C2F63881D8C8D6200389D80 /* SessionController+Exposure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2F63871D8C8D6200389D80 /* SessionController+Exposure.swift */; };
 		7C2F638A1D8C9AE700389D80 /* SessionController+Focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */; };
+		7C3CBF7F1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3CBF7E1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift */; };
 		7CA651691D8C358800F5B1B1 /* Array+NextOrFirst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */; };
 		7CE713261D8C2BF200D7200A /* SessionController+WhiteBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */; };
 		7CF3E06E1DA446900023023C /* SessionController+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF3E06D1DA446900023023C /* SessionController+Camera.swift */; };
+		7CF5BAD61DA8E0C3007785DE /* SessionController+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF5BAD51DA8E0C3007785DE /* SessionController+Capture.swift */; };
 		C40E42991CBFB0A000F899C1 /* Celluloid.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C48F8B761CB17665008B663D /* Celluloid.framework */; };
 		C40E429B1CBFB0AB00F899C1 /* Celluloid.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C48F8B761CB17665008B663D /* Celluloid.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C48F8B791CB17665008B663D /* Celluloid.h in Headers */ = {isa = PBXBuildFile; fileRef = C48F8B781CB17665008B663D /* Celluloid.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -53,9 +55,11 @@
 /* Begin PBXFileReference section */
 		7C2F63871D8C8D6200389D80 /* SessionController+Exposure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Exposure.swift"; sourceTree = "<group>"; };
 		7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Focus.swift"; sourceTree = "<group>"; };
+		7C3CBF7E1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCaptureDelegate.swift; sourceTree = "<group>"; };
 		7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+NextOrFirst.swift"; sourceTree = "<group>"; };
 		7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+WhiteBalance.swift"; sourceTree = "<group>"; };
 		7CF3E06D1DA446900023023C /* SessionController+Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Camera.swift"; sourceTree = "<group>"; };
+		7CF5BAD51DA8E0C3007785DE /* SessionController+Capture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Capture.swift"; sourceTree = "<group>"; };
 		C40E429F1CBFB18B00F899C1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C48F8B761CB17665008B663D /* Celluloid.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Celluloid.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C48F8B781CB17665008B663D /* Celluloid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Celluloid.h; sourceTree = "<group>"; };
@@ -116,11 +120,13 @@
 				C48F8B781CB17665008B663D /* Celluloid.h */,
 				C48F8B941CB176FA008B663D /* CelluloidView.swift */,
 				C48F8B961CB17ADA008B663D /* CelluloidError.swift */,
+				7C3CBF7E1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift */,
 				C4DD635D1CB505E400429307 /* SessionController.swift */,
 				7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */,
 				7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */,
 				7C2F63871D8C8D6200389D80 /* SessionController+Exposure.swift */,
 				7CF3E06D1DA446900023023C /* SessionController+Camera.swift */,
+				7CF5BAD51DA8E0C3007785DE /* SessionController+Capture.swift */,
 				7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */,
 				C4DD635F1CB5287600429307 /* Authorizer.swift */,
 			);
@@ -207,7 +213,9 @@
 					};
 					C48F8B811CB1767A008B663D = {
 						CreatedOnToolsVersion = 7.3;
+						DevelopmentTeam = 2466624KEK;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -261,8 +269,10 @@
 				7C2F63881D8C8D6200389D80 /* SessionController+Exposure.swift in Sources */,
 				C48F8B971CB17ADA008B663D /* CelluloidError.swift in Sources */,
 				7CE713261D8C2BF200D7200A /* SessionController+WhiteBalance.swift in Sources */,
+				7CF5BAD61DA8E0C3007785DE /* SessionController+Capture.swift in Sources */,
 				7C2F638A1D8C9AE700389D80 /* SessionController+Focus.swift in Sources */,
 				C48F8B951CB176FA008B663D /* CelluloidView.swift in Sources */,
+				7C3CBF7F1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift in Sources */,
 				7CA651691D8C358800F5B1B1 /* Array+NextOrFirst.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -442,11 +452,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Alex Littlejohn (MPB6A6T8X9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 2466624KEK;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Example/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zero.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zero.Celluloid.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -455,11 +471,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Alex Littlejohn (MPB6A6T8X9)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = 2466624KEK;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Example/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.zero.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zero.Celluloid.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

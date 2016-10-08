@@ -22,8 +22,8 @@ class ViewController: UIViewController {
         super.viewWillAppear(animated)
         
         do {
-            try cameraView.startCamera() { success in
-                
+            try cameraView.start() { success in
+                print(success)
             }
             print("camera started")
         } catch {

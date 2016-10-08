@@ -12,15 +12,21 @@ import AVFoundation
 public typealias SessionStartComplete = AuthorizeComplete
 public typealias SessionStopComplete = () -> Void
 
+struct Platform {
+    static var isSimulator: Bool {
+        return TARGET_OS_SIMULATOR != 0
+    }
+}
+
 public class SessionController {
 
     public let session = AVCaptureSession()
-    public let captureSettings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecJPEG])
     public var availableDevices: [AVCaptureDevice] {
         return discovery?.devices ?? []
     }
     public var flashMode: AVCaptureFlashMode = .off
-    public var isLensStabilizationEnabled: Bool = false
+    public var lensStabilizationEnabled: Bool = false
+    public var rawCaptureEnabled: Bool = false
 
     let sessionQueue = DispatchQueue(label: "com.Celluloid.SessionController.Queue")
     
@@ -30,12 +36,14 @@ public class SessionController {
 
     let discovery = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDuoCamera, .builtInTelephotoCamera], mediaType: AVMediaTypeVideo, position: .unspecified)
 
+    var photoCaptureDelegates: [Int64: PhotoCaptureDelegate] = [:]
+
     public func start(completion: @escaping SessionStartComplete) throws {
+        try self.setup()
         authorizeCamera { success in
             if success {
                 self.sessionQueue.sync {
-                    self.session.startRunning()
-
+                    self.session.startRunning() 
                     DispatchQueue.main.async {
                         completion(success)
                     }
@@ -60,14 +68,14 @@ public class SessionController {
 
         flashMode = autoAvailable ? .auto : .off
 
-        isLensStabilizationEnabled = false
+        lensStabilizationEnabled = false
     }
 }
 
 public extension SessionController {
 
     public func setFlash(mode: AVCaptureFlashMode) {
-        captureSettings.flashMode = mode
+        flashMode = mode
     }
 
     public func zoom(to level: CGFloat) throws {
@@ -124,6 +132,8 @@ internal extension SessionController {
         guard session.canAddOutput(output) else {
             throw CelluloidError.deviceConfigurationFailed
         }
+
+        session.addOutput(output)
         
         return output
     }
