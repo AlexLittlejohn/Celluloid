@@ -9,219 +9,164 @@
 import UIKit
 import AVFoundation
 
-/**
- CelluloidView is the main component of Celluloid. Use it to add camera functionality to your app.
- */
 public class CelluloidView: UIView {
-    
-    /**
-     The session controller is the brains behind the camera and manages all the aspects thereof.
-     */
-    lazy var sessionController: CelluloidSessionController = CelluloidSessionController(delegate: self, configuration: self.configuration)
-    
-    /**
-     The preview layer used by the capture device.
-     */
-    var preview: AVCaptureVideoPreviewLayer!
-    
-    /**
-     The configuration object used by the session.
-     By default it will be `CelluloidConfiguration.defaultConfiguration`
-     */
-    var configuration = CelluloidConfiguration()
 
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-        preview = createPreview(session: sessionController.session)
-    }
+    lazy var controller = SessionController()
     
+    var preview: AVCaptureVideoPreviewLayer?
+
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        preview = createPreview(session: sessionController.session)
+        commonInit()
     }
-    
-    /**
-     This is required to start the camera session and preview. If permission is not given by the user to access the camera the closure paramater will be false. If an error occurs the method will throw one of the following `CelluloidError` types.
-     
-     - VideoOutputDelegateDeallocated
-     - DeviceCreationFailed
-     - InputCreationFailed
-     - ImageOutputCreationFailed
-     - VideoOutputCreationFailed
-     
-     ---
-     
-     - paramater **closure**: A closure that will be called after the camera starts up and/or authorization fails
-     */
-    public func startCamera(closure: CelluloidSessionStartupComplete) throws {
-        try sessionController.start(closure)
+
+    func commonInit() {
+        setup()
     }
-    
-    /**
-     Stops the preview and the session from running. Call this when you remove the camera from the view or in `viewWillDissappear`
-     */
-    public func stopCamera() {
-        sessionController.stop()
+
+    public func start(_ closure: @escaping SessionStartComplete) throws {
+        
+
+        try controller.start { success in
+            if success {
+                self.preview = self.createPreview(session: self.controller.session)
+            }
+
+            closure(success)
+        }
+    }
+
+    public func stop() {
+        controller.stop()
     }
     
     public override func layoutSubviews() {
         super.layoutSubviews()
         preview?.frame = bounds
     }
-}
 
-public extension CelluloidView {
-    /**
-     The current flash mode.
-     
-     Will be nil if the camera has not yet been started with `startCamera(_:)`
-     */
-    var flashMode: AVCaptureFlashMode? {
-        return sessionController.flashMode
-    }
-    
-    /**
-     The current focus mode.
-     
-     Will be nil if the camera has not yet been started with `startCamera(_:)`
-     */
-    var focusMode: AVCaptureFocusMode? {
-        return sessionController.focusMode
-    }
-    
-    /**
-     The current exposure mode.
-     
-     Will be nil if the camera has not yet been started with `startCamera(_:)`
-     */
-    var exposureMode: AVCaptureExposureMode? {
-        return sessionController.exposureMode
-    }
-    
-    /**
-     The current camera position.
-     
-     Will be nil if the camera has not yet been started with `startCamera(_:)`
-     */
-    var position: AVCaptureDevicePosition? {
-        return sessionController.position
+    open func animateCapture() {
+        alpha = 0
+        UIView.animate(withDuration: 0.25) { 
+            self.alpha = 1
+        }
     }
 }
 
 public extension CelluloidView {
-    /**
-     Cycles between the 3 posible flash modes specified in `AVCaptureFlashMode`.
-     
-     Throws:
-     - CelluloidError.FlashNotSupported
-     - CelluloidError.DeviceNotSet
-     - CelluloidError.DeviceLockFailed
-     
-     */
-    public func cycleFlash() throws {
-        let mode = nextFlashMode(flashMode ?? .Auto)
-        try sessionController.setFlash(mode: mode)
+
+    public func cycleFlash() -> AVCaptureFlashMode {
+        let mode = nextFlash(mode: controller.flashMode)
+        controller.setFlash(mode: mode)
+        return mode
     }
-    
-    /**
-     Chooses the next flash mode based on the current flash mode.
-     */
-    internal func nextFlashMode(mode: AVCaptureFlashMode) -> AVCaptureFlashMode {
+
+    internal func nextFlash(mode: AVCaptureFlashMode) -> AVCaptureFlashMode {
+
+        guard let device = controller.device, device.isFlashAvailable else {
+            return .off
+        }
+
+        let availableModes = controller.output.supportedFlashModes
+
+        let newMode: AVCaptureFlashMode
+
         switch mode {
-        case .On:
-            return .Off
-        case .Off:
-            return .Auto
-        case .Auto:
-            return .On
+        case .on:
+            newMode = .off
+        case .off:
+            newMode = .auto
+        case .auto:
+            newMode = .on
+        }
+
+        guard availableModes.contains(NSNumber(integerLiteral: newMode.rawValue)) else {
+            return mode
+        }
+
+        return newMode
+    }
+
+    public func setPointOfInterest(toPoint: CGPoint) throws {
+
+        // points of interest are in 0...1, not screen pixels
+        let point = CGPoint(x: toPoint.x / frame.width, y: toPoint.y / frame.height)
+        try controller.setPointOfInterest(toPoint: point)
+    }
+
+    public func cycleCamera() throws {
+
+        guard let device = controller.device,
+            let newDevice = controller.availableDevices.nextOrFirst(after: device) else {
+            throw CelluloidError.deviceConfigurationFailed
+        }
+
+        try controller.switchTo(newDevice: newDevice)
+    }
+
+    public func zoomWith(velocity: CGFloat) throws {
+
+        guard let device = controller.device else {
+            throw CelluloidError.deviceConfigurationFailed
+        }
+
+        guard !velocity.isNaN else {
+            return
+        }
+
+        let velocityFactor: CGFloat = 5.0
+        let desiredZoomFactor = device.videoZoomFactor + atan2(velocity, velocityFactor)
+
+        try controller.zoom(to: desiredZoomFactor)
+    }
+}
+
+extension CelluloidView {
+
+    func setup() {
+        let zoomGesture = UIPinchGestureRecognizer(target: self, action: #selector(zoom(gesture:)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap(gesture:)))
+        let doubleTapGesture = UITapGestureRecognizer(target: self, action:#selector(doubleTap(gesture:)))
+
+        doubleTapGesture.numberOfTapsRequired = 2
+
+        addGestureRecognizer(zoomGesture)
+        addGestureRecognizer(tapGesture)
+        addGestureRecognizer(doubleTapGesture)
+
+        isUserInteractionEnabled = true
+    }
+
+    func zoom(gesture: UIPinchGestureRecognizer) {
+        let velocity = gesture.velocity
+        try? zoomWith(velocity: velocity)
+    }
+
+    func tap(gesture: UITapGestureRecognizer) {
+        let point = gesture.location(in: self)
+        try? setPointOfInterest(toPoint: point)
+    }
+
+    func doubleTap(gesture: UITapGestureRecognizer) {
+        guard let orientation = preview?.connection.videoOrientation else {
+            return
+        }
+
+        controller.capturePhoto(previewOrientation: orientation, willCapture: animateCapture) { asset in
+
         }
     }
 
-    /**
-     Sets the focus point of interest to the point specified
+    func createPreview(session: AVCaptureSession) -> AVCaptureVideoPreviewLayer? {
+        guard let preview = AVCaptureVideoPreviewLayer(session: session) else {
+            return nil
+        }
 
-     Throws:
-     - CelluloidError.FocusNotSupported
-     - CelluloidError.DeviceNotSet
-     - CelluloidError.DeviceLockFailed
-     
-     ---
-     
-     - paramater **toPoint**: The focus point of interest in screen coordinates.
-     
-     */
-    public func setFocus(toPoint toPoint: CGPoint) throws {
-        // - focus points are in 0...1, not screen pixels
-        let focusPoint = CGPoint(x: toPoint.x / frame.width, y: toPoint.y / frame.height)
-        try sessionController.setFocus(toPoint: focusPoint)
-    }
-
-    /**
-     Sets the exposure point of interest to the point specified
-
-     Throws:
-     - CelluloidError.ExposureNotSupported
-     - CelluloidError.DeviceNotSet
-     - CelluloidError.DeviceLockFailed
-     
-     ---
-     
-     - paramater **toPoint**: The exposure point of interest in screen coordinates.
-     
-     */
-    public func setExposue(toPoint toPoint: CGPoint) throws {
-        // - exposure points are in 0...1, not screen pixels
-        let exposurePoint = CGPoint(x: toPoint.x / frame.width, y: toPoint.y / frame.height)
-        try sessionController.setExposue(toPoint: exposurePoint)
-    }
-
-    /**
-     Swaps the camera position based on the current position. 
-     
-     i.e. front -> back or back -> front.
-     
-     Throws:
-     - CelluloidError.InputNotSet
-     - CelluloidError.DeviceCreationFailed
-     - CelluloidError.InputCreationFailed
-     */
-    public func swapCameraPosition() throws {
-        let newPosition: AVCaptureDevicePosition = position == .Front ? .Back : .Front
-        try sessionController.setCamera(position: newPosition)
-    }
-
-    /**
-     Sets the zoom scale level that will be applied to the preview and the output.
-     
-     Note that zoom is digital only and that high zoom scales will degrade the image output quality.
-     
-     Throws:
-     - CelluloidError.DeviceNotSet
-     - CelluloidError.DeviceLockFailed
-     
-     ---
-     
-     - paramater **zoom**: A float value denoting the desired zoom scale
-     */
-    public func setCamera(zoom zoom: CGFloat) throws {
-        try setCamera(zoom: zoom)
-    }
-}
-
-extension CelluloidView: AVCaptureVideoDataOutputSampleBufferDelegate {
-    public func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        
-    }
-}
-
-private extension CelluloidView {
-    /**
-     Provided an `AVCaptureSession` instance, create a preview layer for display
-     
-     - paramater **session**: The `AVCaptureSession` to create the preview with
-     */
-    private func createPreview(session session: AVCaptureSession) -> AVCaptureVideoPreviewLayer {
-        let preview = AVCaptureVideoPreviewLayer(session: session)
         preview.videoGravity = AVLayerVideoGravityResizeAspectFill
         preview.frame = bounds
         

@@ -18,12 +18,12 @@ class ViewController: UIViewController {
         view.addSubview(cameraView)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         do {
-            try cameraView.startCamera() { success in
-                
+            try cameraView.start() { success in
+                print(success)
             }
             print("camera started")
         } catch {
