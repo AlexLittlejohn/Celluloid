@@ -63,6 +63,13 @@ extension SessionController {
             photoSettings.isAutoStillImageStabilizationEnabled = false
         }
 
+        if livePhotoEnabled {
+            let urlString = NSTemporaryDirectory() + "live" + String(format: "%lld", photoSettings.uniqueID)
+            let url = URL(fileURLWithPath: urlString)
+
+            photoSettings.livePhotoMovieFileURL = url
+        }
+
         photoSettings.isHighResolutionPhotoEnabled = false
 
         return photoSettings

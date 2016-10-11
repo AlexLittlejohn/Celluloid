@@ -24,11 +24,13 @@ public class SessionController {
     public var availableDevices: [AVCaptureDevice] {
         return discovery?.devices ?? []
     }
-    public var flashMode: AVCaptureFlashMode = .off
-    public var lensStabilizationEnabled: Bool = false
-    public var rawCaptureEnabled: Bool = false
 
-    let sessionQueue = DispatchQueue(label: "com.Celluloid.SessionController.Queue")
+    var flashMode: AVCaptureFlashMode = .off
+    var lensStabilizationEnabled: Bool = false
+    var rawCaptureEnabled: Bool = false
+    var livePhotoEnabled: Bool = true
+
+    let sessionQueue = DispatchQueue(label: "com.zero.celluloid.sessionController.queue")
     
     var input: AVCaptureDeviceInput!
     var output: AVCapturePhotoOutput!
@@ -43,7 +45,9 @@ public class SessionController {
         authorizeCamera { success in
             if success {
                 self.sessionQueue.sync {
-                    self.session.startRunning() 
+                    if !self.session.isRunning {
+                        self.session.startRunning()
+                    }
                     DispatchQueue.main.async {
                         completion(success)
                     }
@@ -57,6 +61,10 @@ public class SessionController {
     }
     
     public func stop() {
+        guard session.isRunning else {
+            return
+        }
+
         sessionQueue.sync {
             self.session.stopRunning()
         }

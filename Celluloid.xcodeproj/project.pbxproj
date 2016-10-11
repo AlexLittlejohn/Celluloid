@@ -10,6 +10,11 @@
 		7C2F63881D8C8D6200389D80 /* SessionController+Exposure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2F63871D8C8D6200389D80 /* SessionController+Exposure.swift */; };
 		7C2F638A1D8C9AE700389D80 /* SessionController+Focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */; };
 		7C3CBF7F1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3CBF7E1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift */; };
+		7C45F9161DAD6A3800628CA8 /* CelluloidView+Internal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C45F9151DAD6A3800628CA8 /* CelluloidView+Internal.swift */; };
+		7C45F9181DAD6A7D00628CA8 /* CelluloidView+Gestures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C45F9171DAD6A7D00628CA8 /* CelluloidView+Gestures.swift */; };
+		7C45F91A1DAD6C4600628CA8 /* CelluloidView+Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C45F9191DAD6C4600628CA8 /* CelluloidView+Animation.swift */; };
+		7C45F91C1DAD6CC900628CA8 /* CelluloidView+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C45F91B1DAD6CC900628CA8 /* CelluloidView+Camera.swift */; };
+		7C45F91E1DAD6D9C00628CA8 /* CelluloidView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C45F91D1DAD6D9C00628CA8 /* CelluloidView+Capture.swift */; };
 		7CA651691D8C358800F5B1B1 /* Array+NextOrFirst.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */; };
 		7CE713261D8C2BF200D7200A /* SessionController+WhiteBalance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */; };
 		7CF3E06E1DA446900023023C /* SessionController+Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CF3E06D1DA446900023023C /* SessionController+Camera.swift */; };
@@ -56,6 +61,11 @@
 		7C2F63871D8C8D6200389D80 /* SessionController+Exposure.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Exposure.swift"; sourceTree = "<group>"; };
 		7C2F63891D8C9AE700389D80 /* SessionController+Focus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Focus.swift"; sourceTree = "<group>"; };
 		7C3CBF7E1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCaptureDelegate.swift; sourceTree = "<group>"; };
+		7C45F9151DAD6A3800628CA8 /* CelluloidView+Internal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CelluloidView+Internal.swift"; sourceTree = "<group>"; };
+		7C45F9171DAD6A7D00628CA8 /* CelluloidView+Gestures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CelluloidView+Gestures.swift"; sourceTree = "<group>"; };
+		7C45F9191DAD6C4600628CA8 /* CelluloidView+Animation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CelluloidView+Animation.swift"; sourceTree = "<group>"; };
+		7C45F91B1DAD6CC900628CA8 /* CelluloidView+Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CelluloidView+Camera.swift"; sourceTree = "<group>"; };
+		7C45F91D1DAD6D9C00628CA8 /* CelluloidView+Capture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CelluloidView+Capture.swift"; sourceTree = "<group>"; };
 		7CA651681D8C358800F5B1B1 /* Array+NextOrFirst.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+NextOrFirst.swift"; sourceTree = "<group>"; };
 		7CE713251D8C2BF200D7200A /* SessionController+WhiteBalance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+WhiteBalance.swift"; sourceTree = "<group>"; };
 		7CF3E06D1DA446900023023C /* SessionController+Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SessionController+Camera.swift"; sourceTree = "<group>"; };
@@ -119,6 +129,11 @@
 				C40E429F1CBFB18B00F899C1 /* Info.plist */,
 				C48F8B781CB17665008B663D /* Celluloid.h */,
 				C48F8B941CB176FA008B663D /* CelluloidView.swift */,
+				7C45F9151DAD6A3800628CA8 /* CelluloidView+Internal.swift */,
+				7C45F9171DAD6A7D00628CA8 /* CelluloidView+Gestures.swift */,
+				7C45F9191DAD6C4600628CA8 /* CelluloidView+Animation.swift */,
+				7C45F91B1DAD6CC900628CA8 /* CelluloidView+Camera.swift */,
+				7C45F91D1DAD6D9C00628CA8 /* CelluloidView+Capture.swift */,
 				C48F8B961CB17ADA008B663D /* CelluloidError.swift */,
 				7C3CBF7E1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift */,
 				C4DD635D1CB505E400429307 /* SessionController.swift */,
@@ -266,12 +281,17 @@
 				C4DD63601CB5287600429307 /* Authorizer.swift in Sources */,
 				C4DD635E1CB505E400429307 /* SessionController.swift in Sources */,
 				7CF3E06E1DA446900023023C /* SessionController+Camera.swift in Sources */,
+				7C45F91C1DAD6CC900628CA8 /* CelluloidView+Camera.swift in Sources */,
+				7C45F9161DAD6A3800628CA8 /* CelluloidView+Internal.swift in Sources */,
 				7C2F63881D8C8D6200389D80 /* SessionController+Exposure.swift in Sources */,
 				C48F8B971CB17ADA008B663D /* CelluloidError.swift in Sources */,
 				7CE713261D8C2BF200D7200A /* SessionController+WhiteBalance.swift in Sources */,
 				7CF5BAD61DA8E0C3007785DE /* SessionController+Capture.swift in Sources */,
+				7C45F9181DAD6A7D00628CA8 /* CelluloidView+Gestures.swift in Sources */,
+				7C45F91A1DAD6C4600628CA8 /* CelluloidView+Animation.swift in Sources */,
 				7C2F638A1D8C9AE700389D80 /* SessionController+Focus.swift in Sources */,
 				C48F8B951CB176FA008B663D /* CelluloidView.swift in Sources */,
+				7C45F91E1DAD6D9C00628CA8 /* CelluloidView+Capture.swift in Sources */,
 				7C3CBF7F1DA6C5FE00C6211F /* PhotoCaptureDelegate.swift in Sources */,
 				7CA651691D8C358800F5B1B1 /* Array+NextOrFirst.swift in Sources */,
 			);
