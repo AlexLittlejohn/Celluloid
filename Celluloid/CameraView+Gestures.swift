@@ -9,7 +9,7 @@
 import Foundation
 
 extension CameraView {
-    internal func setup() {
+    internal func setupGestures() {
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinch(gesture:)))
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tap(gesture:)))
 
@@ -21,11 +21,11 @@ extension CameraView {
 
     @objc open func pinch(gesture: UIPinchGestureRecognizer) {
         let velocity = gesture.velocity
-        try? zoomWith(velocity: velocity)
+        try? zoom(with: velocity)
     }
 
     @objc open func tap(gesture: UITapGestureRecognizer) {
         let point = gesture.location(in: self)
-        try? setPointOfInterest(toPoint: point)
+        try? setPointOfInterest(to: point)
     }
 }

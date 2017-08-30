@@ -26,7 +26,7 @@ public class CameraView: UIView {
     }
 
     func commonInit() {
-        setup()
+        setupGestures()
     }
 
     public func start(_ closure: @escaping SessionStartComplete) throws {

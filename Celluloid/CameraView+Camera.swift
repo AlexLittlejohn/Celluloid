@@ -43,11 +43,11 @@ extension CameraView {
         return newMode
     }
 
-    public func setPointOfInterest(toPoint: CGPoint) throws {
+    public func setPointOfInterest(to point: CGPoint) throws {
 
         // points of interest are in 0...1, not screen pixels
-        let point = CGPoint(x: toPoint.x / frame.width, y: toPoint.y / frame.height)
-        try controller.setPointOfInterest(toPoint: point)
+        let normalisedPoint = CGPoint(x: point.x / frame.width, y: point.y / frame.height)
+        try controller.setPointOfInterest(to: normalisedPoint)
     }
 
     public func cycleCamera() throws {
@@ -57,10 +57,10 @@ extension CameraView {
                 throw CelluloidError.deviceConfigurationFailed
         }
 
-        try controller.switchTo(newDevice: newDevice)
+        try controller.toggle(to: newDevice)
     }
 
-    open func zoomWith(velocity: CGFloat) throws {
+    open func zoom(with velocity: CGFloat) throws {
 
         guard let device = controller.device else {
             throw CelluloidError.deviceConfigurationFailed
@@ -70,7 +70,7 @@ extension CameraView {
             return
         }
 
-        let velocityFactor: CGFloat = 5.0
+        let velocityFactor: CGFloat = 8.0
         let desiredZoomFactor = device.videoZoomFactor + atan2(velocity, velocityFactor)
         
         try controller.zoom(to: desiredZoomFactor)

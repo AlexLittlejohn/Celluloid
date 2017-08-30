@@ -36,7 +36,6 @@ public extension SessionController {
     ///
     /// - parameter position: A value in 0...1
     ///
-    /// - throws: CelluloidError.deviceConfigurationNotSupported
     /// - throws: CelluloidError.deviceConfigurationFailed
     public func setLens(position: Double) throws {
         try configureDevice { device in
