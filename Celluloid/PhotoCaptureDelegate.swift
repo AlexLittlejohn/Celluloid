@@ -12,7 +12,7 @@ import Photos
 
 public class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegate {
 
-    let willCapture: (Void) -> Void
+    let willCapture: () -> Void
     let completion: (PHAsset?) -> Void
     public let settings: AVCapturePhotoSettings
 
@@ -20,18 +20,18 @@ public class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegate {
     var RAWData: Data?
     var liveMovieURL: URL?
 
-    init(settings: AVCapturePhotoSettings, willCapture: @escaping (Void) -> Void, completion: @escaping (PHAsset?) -> Void) {
+    init(settings: AVCapturePhotoSettings, willCapture: @escaping () -> Void, completion: @escaping (PHAsset?) -> Void) {
         self.settings = settings
         self.willCapture = willCapture
         self.completion = completion
         super.init()
     }
 
-    public func capture(_ captureOutput: AVCapturePhotoOutput, willCapturePhotoForResolvedSettings resolvedSettings: AVCaptureResolvedPhotoSettings) {
+    public func photoOutput(_ captureOutput: AVCapturePhotoOutput, willCapturePhotoFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
         willCapture()
     }
 
-    public func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+    public func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
 
         guard let photoBuffer = photoSampleBuffer,
             let previewBuffer = previewPhotoSampleBuffer else {
@@ -41,7 +41,7 @@ public class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegate {
         JPEGData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: photoBuffer, previewPhotoSampleBuffer: previewBuffer)
     }
 
-    public func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingRawPhotoSampleBuffer rawSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+    public func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingRawPhoto rawSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
         guard let rawBuffer = rawSampleBuffer,
             let previewBuffer = previewPhotoSampleBuffer else {
                 return
@@ -50,11 +50,11 @@ public class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegate {
         RAWData = AVCapturePhotoOutput.dngPhotoDataRepresentation(forRawSampleBuffer: rawBuffer, previewPhotoSampleBuffer: previewBuffer)
     }
 
-    public func capture(_ captureOutput: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt outputFileURL: URL, resolvedSettings: AVCaptureResolvedPhotoSettings) {
+    public func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt outputFileURL: URL, resolvedSettings: AVCaptureResolvedPhotoSettings) {
         liveMovieURL = outputFileURL
     }
 
-    public func capture(_ captureOutput: AVCapturePhotoOutput, didFinishCaptureForResolvedSettings resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
+    public func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
 
         guard error == nil else {
             completion(nil)

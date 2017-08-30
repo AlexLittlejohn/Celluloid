@@ -1,5 +1,5 @@
 //
-//  CelluloidView+Capture.swift
+//  CameraView+Capture.swift
 //  Celluloid
 //
 //  Created by Alex Littlejohn on 11/10/16.
@@ -10,14 +10,14 @@ import Foundation
 import Photos
 import AVFoundation
 
-extension CelluloidView {
-    open func capturePhoto(livePhoto: Bool = true, rawCapture: Bool = false, lensStabilization: Bool = false, flashMode: AVCaptureFlashMode = .off, completion: @escaping (PHAsset?) -> Void) {
+extension CameraView {
+    open func capturePhoto(livePhoto: Bool = true, rawCapture: Bool = false, lensStabilization: Bool = false, flashMode: AVCaptureDevice.FlashMode = .off, completion: @escaping (PHAsset?) -> Void) {
         controller.rawCaptureEnabled = rawCapture
         controller.livePhotoEnabled = livePhoto
         controller.lensStabilizationEnabled = lensStabilization
         controller.flashMode = flashMode
 
-        guard let output = controller.output, let connection = output.connection(withMediaType: AVMediaTypeVideo) else {
+        guard let output = controller.output, let connection = output.connection(with: AVMediaType.video) else {
             return
         }
 

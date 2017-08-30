@@ -24,7 +24,7 @@ public extension SessionController {
     ///
     /// - throws: CelluloidError.deviceConfigurationFailed
     /// - throws: CelluloidError.deviceConfigurationNotSupported
-    public func setWhiteBalance(mode: AVCaptureWhiteBalanceMode) throws {
+    public func setWhiteBalance(mode: AVCaptureDevice.WhiteBalanceMode) throws {
         try configureDevice { device in
 
             guard device.whiteBalanceMode != mode else {
@@ -44,10 +44,10 @@ public extension SessionController {
     /// - parameter gains: The computed white balance gains. Will be normalized to prevent out of bounds errors
     ///
     /// - throws: CelluloidError.deviceConfigurationFailed
-    public func setWhiteBalance(gains: AVCaptureWhiteBalanceGains) throws {
+    public func setWhiteBalance(gains: AVCaptureDevice.WhiteBalanceGains) throws {
         try configureDevice { device in
             let normalized = normalizedGains(gains: gains, device: device)
-            device.setWhiteBalanceModeLockedWithDeviceWhiteBalanceGains(normalized, completionHandler: nil)
+            device.setWhiteBalanceModeLocked(with: normalized, completionHandler: nil)
         }
     }
 
@@ -66,7 +66,7 @@ public extension SessionController {
         let _temperature = min(max(minimumTemperature, Float(temperature)), maximumTemperature)
         let _tint = min(max(minimumTint, Float(tint)), maximumTint)
 
-        let temperatureAndTint = AVCaptureWhiteBalanceTemperatureAndTintValues(temperature: _temperature, tint: _tint)
+        let temperatureAndTint = AVCaptureDevice.WhiteBalanceTemperatureAndTintValues(temperature: _temperature, tint: _tint)
 
         try setWhiteBalance(gains: device.deviceWhiteBalanceGains(for: temperatureAndTint))
     }
@@ -79,7 +79,7 @@ public extension SessionController {
 /// - parameter device: A device against which the gains should be normalized
 ///
 /// - returns: normalized AVCaptureWhiteBalanceGains
-fileprivate func normalizedGains(gains: AVCaptureWhiteBalanceGains, device: AVCaptureDevice) -> AVCaptureWhiteBalanceGains {
+fileprivate func normalizedGains(gains: AVCaptureDevice.WhiteBalanceGains, device: AVCaptureDevice) -> AVCaptureDevice.WhiteBalanceGains {
     var g = gains
 
     g.redGain = max(minimumGain, g.redGain)

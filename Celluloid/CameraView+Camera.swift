@@ -1,5 +1,5 @@
 //
-//  CelluloidView+Camera.swift
+//  CameraView+Camera.swift
 //  Celluloid
 //
 //  Created by Alex Littlejohn on 11/10/16.
@@ -9,15 +9,15 @@
 import Foundation
 import AVFoundation
 
-extension CelluloidView {
+extension CameraView {
 
-    public func cycleFlash() -> AVCaptureFlashMode {
+    public func cycleFlash() -> AVCaptureDevice.FlashMode {
         let mode = nextFlash(mode: controller.flashMode)
         controller.setFlash(mode: mode)
         return mode
     }
 
-    internal func nextFlash(mode: AVCaptureFlashMode) -> AVCaptureFlashMode {
+    internal func nextFlash(mode: AVCaptureDevice.FlashMode) -> AVCaptureDevice.FlashMode {
 
         guard let device = controller.device, device.isFlashAvailable else {
             return .off
@@ -25,7 +25,7 @@ extension CelluloidView {
 
         let availableModes = controller.output.supportedFlashModes
 
-        let newMode: AVCaptureFlashMode
+        let newMode: AVCaptureDevice.FlashMode
 
         switch mode {
         case .on:
@@ -36,7 +36,7 @@ extension CelluloidView {
             newMode = .on
         }
 
-        guard availableModes.contains(NSNumber(integerLiteral: newMode.rawValue)) else {
+        guard availableModes.contains(newMode) else {
             return mode
         }
 

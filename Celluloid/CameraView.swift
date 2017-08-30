@@ -1,5 +1,5 @@
 //
-//  CelluloidView.swift
+//  CameraView.swift
 //  Celluloid
 //
 //  Created by Alex Littlejohn on 2016/04/03.
@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-public class CelluloidView: UIView {
+public class CameraView: UIView {
 
     public let controller = SessionController()
     

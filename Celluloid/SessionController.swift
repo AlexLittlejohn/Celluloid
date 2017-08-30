@@ -22,10 +22,10 @@ public class SessionController {
 
     public let session = AVCaptureSession()
     public var availableDevices: [AVCaptureDevice] {
-        return discovery?.devices ?? []
+        return discovery.devices
     }
 
-    var flashMode: AVCaptureFlashMode = .off
+    var flashMode: AVCaptureDevice.FlashMode = .off
     var lensStabilizationEnabled: Bool = false
     var rawCaptureEnabled: Bool = false
     var livePhotoEnabled: Bool = true
@@ -36,7 +36,7 @@ public class SessionController {
     var output: AVCapturePhotoOutput!
     var device: AVCaptureDevice!
 
-    let discovery = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInDuoCamera, .builtInTelephotoCamera], mediaType: AVMediaTypeVideo, position: .unspecified)
+    let discovery = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera, AVCaptureDevice.DeviceType.builtInDuoCamera, AVCaptureDevice.DeviceType.builtInTelephotoCamera], mediaType: AVMediaType.video, position: .unspecified)
 
     var photoCaptureDelegates: [Int64: PhotoCaptureDelegate] = [:]
 
@@ -71,7 +71,7 @@ public class SessionController {
     }
 
     func resetToDefaults() {
-        let autoValue = NSNumber(integerLiteral: AVCaptureFlashMode.auto.rawValue)
+        let autoValue = AVCaptureDevice.FlashMode.auto
         let autoAvailable: Bool = device.isFlashAvailable && output.supportedFlashModes.contains(autoValue)
 
         flashMode = autoAvailable ? .auto : .off
@@ -82,7 +82,7 @@ public class SessionController {
 
 public extension SessionController {
 
-    public func setFlash(mode: AVCaptureFlashMode) {
+    public func setFlash(mode: AVCaptureDevice.FlashMode) {
         flashMode = mode
     }
 
@@ -97,13 +97,13 @@ internal extension SessionController {
 
     internal func setup() throws {
         session.beginConfiguration()
-        session.sessionPreset = AVCaptureSessionPresetPhoto
+        session.sessionPreset = AVCaptureSession.Preset.photo
 
-        guard let videoDevice = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .unspecified) else {
+        guard let videoDevice = AVCaptureDevice.default(AVCaptureDevice.DeviceType.builtInWideAngleCamera, for: AVMediaType.video, position: .unspecified) else {
             throw CelluloidError.deviceConfigurationFailed
         }
 
-        guard let audioDevice = AVCaptureDevice.defaultDevice(withDeviceType: .builtInMicrophone, mediaType: AVMediaTypeAudio, position: .unspecified) else {
+        guard let audioDevice = AVCaptureDevice.default(AVCaptureDevice.DeviceType.builtInMicrophone, for: AVMediaType.audio, position: .unspecified) else {
             throw CelluloidError.deviceConfigurationFailed
         }
 
@@ -115,7 +115,7 @@ internal extension SessionController {
         session.commitConfiguration()
     }
     
-    internal func deviceWith(position: AVCaptureDevicePosition) throws -> AVCaptureDevice {
+    internal func deviceWith(position: AVCaptureDevice.Position) throws -> AVCaptureDevice {
 
         guard let device = availableDevices.filter({ $0.position == position }).first else {
             throw CelluloidError.deviceConfigurationFailed

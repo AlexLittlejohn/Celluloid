@@ -1,5 +1,5 @@
 //
-//  CelluloidView+Animation.swift
+//  CameraView+Animation.swift
 //  Celluloid
 //
 //  Created by Alex Littlejohn on 11/10/16.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension CelluloidView {
+extension CameraView {
     open func animateCapture() {
         alpha = 0
         UIView.animate(withDuration: 0.25) {

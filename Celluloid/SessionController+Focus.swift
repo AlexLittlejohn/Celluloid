@@ -17,7 +17,7 @@ public extension SessionController {
     ///
     /// - throws: CelluloidError.deviceConfigurationFailed
     /// - throws: CelluloidError.deviceConfigurationNotSupported
-    public func setFocus(mode: AVCaptureFocusMode) throws {
+    public func setFocus(mode: AVCaptureDevice.FocusMode) throws {
         try configureDevice { device in
 
             guard device.focusMode != mode else {
@@ -41,7 +41,7 @@ public extension SessionController {
     public func setLens(position: Double) throws {
         try configureDevice { device in
             let p = min(max(position, 0), 1)
-            device.setFocusModeLockedWithLensPosition(Float(p), completionHandler: nil)
+            device.setFocusModeLocked(lensPosition: Float(p), completionHandler: nil)
         }
     }
 }
