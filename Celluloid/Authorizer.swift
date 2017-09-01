@@ -19,13 +19,13 @@ public typealias AuthorizeComplete = (Bool) -> Void
  */
 internal func authorizeCamera(_ completion: @escaping AuthorizeComplete) {
 
-    let authorizationStatus = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
+    let authorizationStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
 
     switch authorizationStatus {
     case .authorized:
         completion(true)
     case .notDetermined:
-        AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo, completionHandler: completion)
+        AVCaptureDevice.requestAccess(for: AVMediaType.video, completionHandler: completion)
     default:
         completion(false)
     }
@@ -36,7 +36,7 @@ internal func authorizeCamera(_ completion: @escaping AuthorizeComplete) {
  */
 internal func authorizeMicrophone(_ completion: @escaping AuthorizeComplete) {
 
-    let authorizationStatus = AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeAudio)
+    let authorizationStatus = AVCaptureDevice.authorizationStatus(for: AVMediaType.audio)
 
     switch authorizationStatus {
     case .authorized:
@@ -44,6 +44,6 @@ internal func authorizeMicrophone(_ completion: @escaping AuthorizeComplete) {
     case .denied, .restricted:
         completion(false)
     case .notDetermined:
-        AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeAudio, completionHandler: completion)
+        AVCaptureDevice.requestAccess(for: AVMediaType.audio, completionHandler: completion)
     }
 }

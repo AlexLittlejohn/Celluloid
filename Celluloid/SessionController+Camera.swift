@@ -16,7 +16,7 @@ public extension SessionController {
     /// - parameter newDevice: a new AVCaptureDevice to use for video input
     ///
     /// - throws: CelluloidError.deviceConfigurationFailed
-    public func switchTo(newDevice: AVCaptureDevice) throws {
+    public func toggle(to newDevice: AVCaptureDevice) throws {
 
         guard availableDevices.contains(newDevice) else {
             return
@@ -48,11 +48,11 @@ public extension SessionController {
         resetToDefaults()
     }
 
-    public func setPointOfInterest(toPoint: CGPoint) throws {
+    public func setPointOfInterest(to point: CGPoint) throws {
         try configureDevice { device in
 
-            let x = min(max(toPoint.x, 0), 1)
-            let y = min(max(toPoint.y, 0), 1)
+            let x = min(max(point.x, 0), 1)
+            let y = min(max(point.y, 0), 1)
 
             let pointOfInterest = CGPoint(x: x, y: y)
 

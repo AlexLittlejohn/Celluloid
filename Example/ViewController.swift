@@ -11,7 +11,7 @@ import Celluloid
 
 class ViewController: UIViewController {
 
-    let cameraView = CelluloidView()
+    let cameraView = CameraView()
     
     override func viewDidLoad() {
         super.viewDidLoad()

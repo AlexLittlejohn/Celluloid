@@ -22,7 +22,7 @@ public extension SessionController {
     ///
     /// - throws: CelluloidError.deviceConfigurationFailed
     /// - throws: CelluloidError.deviceConfigurationNotSupported
-    public func setExposure(mode: AVCaptureExposureMode) throws {
+    public func setExposure(mode: AVCaptureDevice.ExposureMode) throws {
         try configureDevice { device in
 
             guard device.exposureMode != mode else {
@@ -55,7 +55,7 @@ public extension SessionController {
             let maxDurationSeconds = CMTimeGetSeconds(device.activeFormat.maxExposureDuration)
             let newDurationSeconds = d * (maxDurationSeconds - minDurationSeconds) + minDurationSeconds
 
-            device.setExposureModeCustomWithDuration(CMTimeMakeWithSeconds(newDurationSeconds, 1000 * 1000 * 1000), iso: AVCaptureISOCurrent, completionHandler: nil)
+            device.setExposureModeCustom(duration: CMTimeMakeWithSeconds(newDurationSeconds, 1000 * 1000 * 1000), iso: AVCaptureDevice.currentISO, completionHandler: nil)
 
             flashMode = .off
         }
@@ -83,7 +83,7 @@ public extension SessionController {
     public func setISO(iso: Double) throws {
         try configureDevice { device in
             let _iso = min(max(device.activeFormat.minISO, Float(iso)), device.activeFormat.maxISO)
-            device.setExposureModeCustomWithDuration(AVCaptureExposureDurationCurrent, iso: _iso, completionHandler: nil)
+            device.setExposureModeCustom(duration: AVCaptureDevice.currentExposureDuration, iso: _iso, completionHandler: nil)
 
             flashMode = .off
         }

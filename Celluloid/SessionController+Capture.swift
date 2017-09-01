@@ -25,13 +25,13 @@ extension SessionController {
             let bracketedCaptureSettings: AVCapturePhotoBracketSettings
 
             if device.exposureMode == .custom {
-                bracketedImageSettings = AVCaptureManualExposureBracketedStillImageSettings.manualExposureSettings(withExposureDuration: AVCaptureExposureDurationCurrent, iso: AVCaptureISOCurrent)
+                bracketedImageSettings = AVCaptureManualExposureBracketedStillImageSettings.manualExposureSettings(exposureDuration: AVCaptureDevice.currentExposureDuration, iso: AVCaptureDevice.currentISO)
             } else {
-                bracketedImageSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(withExposureTargetBias: AVCaptureExposureTargetBiasCurrent)
+                bracketedImageSettings = AVCaptureAutoExposureBracketedStillImageSettings.autoExposureSettings(exposureTargetBias: AVCaptureDevice.currentExposureTargetBias)
             }
 
             if rawCaptureEnabled && output.availableRawPhotoPixelFormatTypes.count > 0 {
-                let rawSetting: OSType = output.availableRawPhotoPixelFormatTypes[0].uint32Value as OSType
+                let rawSetting: OSType = output.availableRawPhotoPixelFormatTypes[0]
                 bracketedCaptureSettings = AVCapturePhotoBracketSettings(rawPixelFormatType: rawSetting, processedFormat: nil, bracketedSettings: [bracketedImageSettings])
             } else {
                 bracketedCaptureSettings = AVCapturePhotoBracketSettings(rawPixelFormatType: 0, processedFormat: processedFormat, bracketedSettings: [bracketedImageSettings])
@@ -42,7 +42,7 @@ extension SessionController {
             photoSettings = bracketedCaptureSettings
         } else {
             if rawCaptureEnabled && output.availableRawPhotoPixelFormatTypes.count > 0 {
-                let rawSetting: OSType = output.availableRawPhotoPixelFormatTypes[0].uint32Value as OSType
+                let rawSetting: OSType = output.availableRawPhotoPixelFormatTypes[0]
                 photoSettings = AVCapturePhotoSettings(rawPixelFormatType: rawSetting)
             } else {
                 photoSettings = AVCapturePhotoSettings()
@@ -63,12 +63,19 @@ extension SessionController {
             photoSettings.isAutoStillImageStabilizationEnabled = false
         }
 
+        if livePhotoEnabled {
+            let urlString = NSTemporaryDirectory() + "live" + String(format: "%lld", photoSettings.uniqueID)
+            let url = URL(fileURLWithPath: urlString)
+
+            photoSettings.livePhotoMovieFileURL = url
+        }
+
         photoSettings.isHighResolutionPhotoEnabled = false
 
         return photoSettings
     }
 
-    public func capturePhoto(previewOrientation: AVCaptureVideoOrientation, willCapture: @escaping (Void) -> Void, completion: @escaping (PHAsset?) -> Void) {
+    public func capturePhoto(previewOrientation: AVCaptureVideoOrientation, willCapture: @escaping () -> Void, completion: @escaping (PHAsset?) -> Void) {
 
         guard let output = output, let settings = currentPhotoSettings() else {
             completion(nil)
@@ -76,7 +83,7 @@ extension SessionController {
         }
 
         sessionQueue.async {
-            let connection = output.connection(withMediaType: AVMediaTypeVideo)
+            let connection = output.connection(with: AVMediaType.video)
             connection?.videoOrientation = previewOrientation
 
             let captureDelegate = PhotoCaptureDelegate(settings: settings, willCapture: willCapture) { asset in
