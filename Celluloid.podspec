@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name               = "Celluloid"
-  spec.version            = "1.0.0"
+  spec.version            = "1.0.1"
   spec.summary            = "A view that allows you to control many aspects of the iOS camera"
   spec.source             = { :git => "https://github.com/AlexLittlejohn/Celluloid.git", :tag => spec.version.to_s }
   spec.requires_arc       = true
